@@ -1,0 +1,14 @@
+=================================================
+= GrapeJs in 10/04/2022                         =
+=================================================                              
+
+info Direct dependencies
+└─ grapesjs@0.18.4
+info All dependencies
+├─ backbone-undo@0.2.5
+├─ backbone@1.3.3
+├─ codemirror-formatting@1.0.0
+├─ codemirror@5.65.2
+├─ grapesjs@0.18.4
+├─ promise-polyfill@8.2.3
+└─ underscore@1.13.2

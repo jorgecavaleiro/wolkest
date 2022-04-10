@@ -1,15 +1,24 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+
+  <PV-Button value="Ok" />
+  <PV-InputText></PV-InputText>
+
+  <HelloWorld msg="Wolkest App"/>
+  
+  <LayoutBuilder />
+  
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
+import LayoutBuilder from './components/LayoutBuilder.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HelloWorld,
+    LayoutBuilder
   }
 }
 </script>
