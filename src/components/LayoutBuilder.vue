@@ -8,7 +8,9 @@
 <script>
 
 import 'grapesjs/dist/css/grapes.min.css';
+import 'grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css'
 import grapesjs from 'grapesjs';
+import grapesjsPreset from 'grapesjs-preset-webpage';
 
 export default {
   name: 'LayoutBuilder',
@@ -20,7 +22,8 @@ export default {
     grapesjs.init({
       container: '#gjs',
       plugins: [
-       'gjs-mjml'
+       'gjs-mjml',
+       grapesjsPreset
       ]
     })
   }

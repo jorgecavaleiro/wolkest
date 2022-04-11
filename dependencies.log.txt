@@ -1,6 +1,6 @@
-=================================================
-= GrapeJs in 10/04/2022                         =
-=================================================                              
+=========================================================
+= GrapeJs in 10/04/2022                                 =
+=========================================================                              
 
 info Direct dependencies
 └─ grapesjs@0.18.4
@@ -12,3 +12,22 @@ info All dependencies
 ├─ grapesjs@0.18.4
 ├─ promise-polyfill@8.2.3
 └─ underscore@1.13.2
+
+=========================================================
+= grapesjs-preset-webpage in 11/04/2022                 =
+= from https://github.com/artf/grapesjs-preset-webpage  =
+=========================================================
+
+info Direct dependencies
+└─ grapesjs-preset-webpage@0.1.11
+info All dependencies
+└─ grapesjs-preset-webpage@0.1.11
+
+indirect dependencies:
+grapesjs-blocks-basic Basic set of blocks
+grapesjs-navbar Simple navbar component
+grapesjs-component-countdown Simple countdown component
+grapesjs-plugin-forms Set of form components and blocks
+grapesjs-aviary Add the Aviary Image Editor
+grapesjs-plugin-filestack Add Filestack uploader in Asset Manager
+grapesjs-plugin-export Export GrapesJS templates in a zip archive
