@@ -12,6 +12,10 @@ import 'grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css'
 import grapesjs from 'grapesjs';
 import grapesjsPreset from 'grapesjs-preset-webpage';
 
+// My plugins
+
+import autocompletePlugin from '../plugins/auto-complete/autocomplete';
+
 export default {
   name: 'LayoutBuilder',
   props: {
@@ -23,7 +27,8 @@ export default {
       container: '#gjs',
       plugins: [
        'gjs-mjml',
-       grapesjsPreset
+       grapesjsPreset,
+       autocompletePlugin
       ]
     })
   }

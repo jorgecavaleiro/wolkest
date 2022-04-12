@@ -14,10 +14,11 @@ const app = createApp(App);
 
 app.use(PrimeVue);
 
-app.mount('#app')
-
 // Import components from PrimeVue Lib
 
 app.component('Prime-Dialog', Dialog);
 app.component('PV-Button', Button);
 app.component('PV-InputText', InputText);
+
+app.mount('#app')
+
