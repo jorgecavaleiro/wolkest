@@ -5,7 +5,6 @@
   <PV-InputText></PV-InputText>
 
   <HelloWorld msg="Wolkest App"/>
-  
   <LayoutBuilder />
   
 </template>
