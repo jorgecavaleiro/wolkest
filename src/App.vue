@@ -1,23 +1,18 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-
-  <PV-Button value="Ok" />
-  <PV-InputText></PV-InputText>
-
-  <HelloWorld msg="Wolkest App"/>
-  <LayoutBuilder />
-  
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </nav>
+  <main>
+    <router-view />
+  </main>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-import LayoutBuilder from './components/LayoutBuilder.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
-    LayoutBuilder
   }
 }
 </script>
@@ -29,6 +24,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 </style>
