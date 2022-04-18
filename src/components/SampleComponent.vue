@@ -14,7 +14,7 @@
 import { ref, defineComponent, onUnmounted } from 'vue'
 
 export default defineComponent({
-  name: 'HelloWorld',
+  name: 'SampleComponent',
   props: {
     msg: {
       type: String,

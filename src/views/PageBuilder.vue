@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: "Home-Component",
+  name: "VC-PageBuilder",
   data() {
     return {
       containerId: "",
@@ -39,25 +39,41 @@ const { appContext } = getCurrentInstance();
 
 var container = ref();
 let counter = 1;
-let destroyComp = null;
+let components = new Map();
 
-onUnmounted(() => destroyComp?.());
+// cleanup
+onUnmounted(() => { 
+  components.forEach(c => c?.())
+  components.clear()
+  console.log('all clean and done!')
+});
 
 const insert = async (id) => {
-    console.log(id)
-    // if (id) {
-    //     container.value = document.getElementById(id)
-    // }
-    destroyComp?.();
-    destroyComp = renderComponent({
-        el: container.value,
-        component: (await import("@/components/SampleComponent.vue")).default,
-        props: {
-            key: counter,
-            msg: "Message " + counter++,
-        },
-        appContext,
-    });
+  console.log(id)
+  if (id) {
+    container.value = document.getElementById(id)    
+  } else {
+    console.log('No target container. Aborting...')
+    return
+  }
+
+  // check if occupied
+  const tenant = components.get(id)
+  if (tenant) {
+    tenant?.();
+  }
+
+  const newCmp = renderComponent({
+      el: container.value,
+      component: (await import("@/components/SampleComponent.vue")).default,
+      props: {
+          key: counter,
+          msg: "Message " + counter++,
+      },
+      appContext,
+  });
+
+  components.set(id, newCmp)
 };
 </script>
 
