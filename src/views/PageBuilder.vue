@@ -1,22 +1,26 @@
 <template>
   <div class="home">
     <div class="flex-container">
-      <div class="fex-child">
+      <div class="flex-child">
         <select v-model="containerId">
           <option disabled value="">Select target</option>
+          <option value="container-1">1</option>
           <option value="container-2">2</option>
           <option value="container-3">3</option>
           <option value="container-4">4</option>
         </select>
       </div>
-      <div class="fex-child">
-        <button @click="insert(containerId)">Insert component on {{ containerId }}</button>
+      <div class="flex-child">
+        <button @click="addComponent(containerId)">Insert component in {{ containerId }}</button>
       </div>
+      <div class="flex-child"></div> 
     </div>
-    <div class="box" ref="container"></div>
-    <div class="box" id="container-2"></div>
-    <div class="box" id="container-3"></div>
-    <div class="box" id="container-4"></div>
+    <div id="canvas" ref="root">
+      <div class="box" id="container-1"></div>
+      <div class="box" id="container-2"></div>
+      <div class="box" id="container-3"></div>
+      <div class="box" id="container-4"></div>
+    </div>
   </div>
 </template>
 
@@ -37,7 +41,7 @@ import renderComponent from "@/renderComponent";
 
 const { appContext } = getCurrentInstance();
 
-var container = ref();
+var container = ref("root");
 let counter = 1;
 let components = new Map();
 
@@ -48,7 +52,8 @@ onUnmounted(() => {
   console.log('all clean and done!')
 });
 
-const insert = async (id) => {
+// Add component method : Add component to specified container
+const addComponent = async (id) => {
   console.log(id)
   if (id) {
     container.value = document.getElementById(id)    
@@ -73,6 +78,7 @@ const insert = async (id) => {
       appContext,
   });
 
+  // Add to components' collection
   components.set(id, newCmp)
 };
 </script>
@@ -92,7 +98,7 @@ const insert = async (id) => {
   display: flex;
 }
 .flex-child {
-  flex: 1;
+  padding: 1rem;
 }
 .flex-child:first-child {
   margin-right: 20px;
