@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    props: ['heading', 'paragraph', 'footnote', 'backgroundImage', 'url'],    
+    props: ['heading', 'paragraph', 'footnote', 'image', 'url'],    
 }
 </script>
 

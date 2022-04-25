@@ -39,7 +39,6 @@ import Dropdown from 'primevue/dropdown';
 
 const { appContext } = getCurrentInstance();
 
-var container = ref("root");
 let counter = 1;
 let components = new Map();
 
@@ -52,7 +51,7 @@ onUnmounted(() => {
 
 // Add component method : Add component to specified container
 const addComponent = async (id, componentName, props) => {
-  console.log(id)
+  let container = ref("root")
   if (id) {
     container.value = document.getElementById(id)    
   } else {
@@ -81,12 +80,13 @@ const addComponent = async (id, componentName, props) => {
       console.log(`Component not found ${componentName}.`);
   }
 
-  // check if occupied
+  // if container is occupied => clear it
   const tenant = components.get(id)
   if (tenant) {
     tenant?.();
   }
 
+  // render component into the DOM
   const newCmp = renderComponent({
       el: container.value,
       component: component,
@@ -125,12 +125,10 @@ export default {
   mounted() {
     // load the page model
     const componentsDef = pageLoad()
-    componentsDef.forEach(c => {
-      let counter = 1
+    componentsDef.forEach((c, index) => {
       console.log(c);
-      const containerId = `container-${counter}`
-      this.addComponent(containerId, 'CardComponent', c.props)
-      counter++
+      console.log(`adding component ${c.id} to the container: ${index}`)
+      this.addComponent(index, 'CardComponent', c.props)
     })
   }
 };
