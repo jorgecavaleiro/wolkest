@@ -2,7 +2,7 @@
   <div class="home">
     <Sidebar v-model:visible="visibleLeft">
       <Dropdown v-model="selectedTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />
-      <PV-Button icon="pi pi-arrow-right" @click="addComponent(selectedTarget.id, 'SampleComponent')" />    
+      <PV-Button icon="pi pi-arrow-right" @click="addComponent(selectedTarget.id, 'SampleComponent', { key: counter, msg: 'hi there!'})" />    
     </Sidebar>  
 
     <PV-Button class="sidebar-open" icon="pi pi-arrow-right" @click="visibleLeft = true" />    
@@ -31,72 +31,58 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted, getCurrentInstance } from "vue";
-import renderComponent from "@/renderComponent";
-import pageLoad from "./pageModelLoader";
-import Sidebar from 'primevue/sidebar';
-import Dropdown from 'primevue/dropdown';
+  import { ref, getCurrentInstance } from "vue";
+  import renderComponent from "@/renderComponent";
+  import pageLoad from "./pageModelLoader";
+  import Sidebar from 'primevue/sidebar';
+  import Dropdown from 'primevue/dropdown';
 
-const { appContext } = getCurrentInstance();
+  const { appContext } = getCurrentInstance();
 
-let counter = 1;
-let components = new Map();
+  let counter = 1;
+  let components = new Map();
 
-// cleanup
-onUnmounted(() => { 
-  components.forEach(c => c?.())
-  components.clear()
-  console.log('all clean and done!')
-});
+  // Add component method : Add component to specified container
+  const addComponent = async (id, componentName, props) => {
+    let container = ref("root")
+    if (id) {
+      container.value = document.getElementById(id)    
+    } else {
+      console.log('No target container. Aborting...')
+      return
+    }
 
-// Add component method : Add component to specified container
-const addComponent = async (id, componentName, props) => {
-  let container = ref("root")
-  if (id) {
-    container.value = document.getElementById(id)    
-  } else {
-    console.log('No target container. Aborting...')
-    return
-  }
+    let component = null;
 
-  if (!props) {
-    props = {
-          key: counter,
-          msg: "Message " + counter++,
-      }
-  }
+    // get the component 
+    switch (componentName) {
+      case 'SampleComponent':
+        component = (await import("@/components/SampleComponent.vue")).default
+        break
+      case 'CardComponent':
+        component = (await import("@/components/CardComponent.vue")).default
+        break
+      default:
+        console.log(`Component not found ${componentName}.`);
+    }
 
-  let component = null;
+    // if container is occupied => clear it
+    const tenant = components.get(id)
+    if (tenant) {
+      tenant?.();
+    }
 
-  // get the component 
-  switch (componentName) {
-    case 'SampleComponent':
-      component = (await import("@/components/SampleComponent.vue")).default
-      break
-    case 'CardComponent':
-      component = (await import("@/components/CardComponent.vue")).default
-      break
-    default:
-      console.log(`Component not found ${componentName}.`);
-  }
+    // render component into the DOM
+    const newCmp = renderComponent({
+        el: container.value,
+        component: component,
+        props: props,
+        appContext,
+    });
 
-  // if container is occupied => clear it
-  const tenant = components.get(id)
-  if (tenant) {
-    tenant?.();
-  }
-
-  // render component into the DOM
-  const newCmp = renderComponent({
-      el: container.value,
-      component: component,
-      props: props,
-      appContext,
-  });
-
-  // Add to components' collection
-  components.set(id, newCmp)
-};
+    // Add to components' collection
+    components.set(id, newCmp)
+  };
 </script>
 
 
@@ -118,9 +104,7 @@ export default {
     };
   },
   methods: {
-      addComponent: function () {
-          // this function correctly fetches external data
-      }
+    // add shared methods here.
   },  
   mounted() {
     // load the page model
@@ -130,6 +114,11 @@ export default {
       console.log(`adding component ${c.id} to the container: ${index}`)
       this.addComponent(index, 'CardComponent', c.props)
     })
+  },
+  unmounted () {
+    this.components.forEach(c => c?.())
+    this.components.clear()
+    console.log('all clean and done!')
   }
 };
 </script>
