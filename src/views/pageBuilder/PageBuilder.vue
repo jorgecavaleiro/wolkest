@@ -64,22 +64,39 @@
     }
 
     // Get the contents wrapper or create if new
+    let contentWrapper = null
     const position = document.getElementById(id).children.length 
-    const wrapperName = `${id}-contentWrapper-${position}` 
-    const contentWrapper = document.createElement("div")
-    contentWrapper.id = wrapperName
-    contentWrapper.style.width = "100%"
-    // TODO: The next line can only be applied when this is the only tenant on container
-    //contentWrapper.style.minHeight = "100%"
-    document.getElementById(id).appendChild(contentWrapper)     
-    console.log(`added the content wrapper: ${contentWrapper.id}`)
+    let wrapperName = `${id}-contentWrapper-${position}`
+    
+    if (replaceContent && position > 0) {
+      wrapperName  = `${id}-contentWrapper-${position - 1}`      
+      contentWrapper = document.getElementById(wrapperName)
+      console.log(`inserting into existing: ${wrapperName}`)
+    } else {
+      // must create a new wrapper for the added component
+      contentWrapper = document.createElement("div")
+      contentWrapper.id = wrapperName
+      contentWrapper.style.width = "100%"
+      document.getElementById(id).appendChild(contentWrapper)     
+      console.log(`added the content wrapper: ${contentWrapper.id}`)
+    }
+
+    // when this is the only tenant on container
+    if (position == 0) {
+      contentWrapper.style.minHeight = "100%"
+    } else {
+      const children = Array.from(document.getElementById(id).children)
+      children.forEach(div => {
+        div.style.minHeight = "auto"
+      })
+    }
     
     // Dynamically load the component
     let component = await loadComponentByName(componentName)
 
     if (replaceContent) {
       // if container is occupied => unmount previous tenant
-      const tenant = components.get(id)
+      const tenant = components.get(wrapperName)
       if (tenant) {
         tenant?.();
       }
@@ -94,7 +111,7 @@
     });
 
     // Add to components' collection
-    components.set(`${id}-${position}`, newCmp)
+    components.set(wrapperName, newCmp)
   };
 </script>
 
