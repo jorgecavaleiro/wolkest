@@ -2,9 +2,12 @@
   <div class="home">
     <Sidebar v-model:visible="visibleLeft">
       <div class="stack-container">
+        <div>
+          <Dropdown class="element" v-model="selectedComponentType" :options="componentTypes" optionLabel="name" placeholder="Select a Component" />
+        </div>
         <div class="queue-container">
-          <Dropdown class="element" v-model="selectedTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />
-          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(selectedTarget.id, 'SampleComponent', { key: counter, msg: 'hi there!'}, replaceContent)" />    
+          <Dropdown class="element" v-model="selectedTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
+          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(selectedTarget.id, selectedComponentType.id, { key: counter, msg: 'hi there!'}, replaceContent)" />    
         </div>
         <div class="queue-container">
           <Checkbox class="element" name="replaceContent" v-model="replaceContent" :binary="true" />
@@ -123,6 +126,7 @@ export default {
     return {
       containerId: "",
       selectedTarget: null,
+      selectedComponentType: null,
       visibleLeft: false,
       replaceContent: true,
       targets: [
@@ -131,7 +135,11 @@ export default {
         {name: 'Container 3', id: 'container-3'},
         {name: 'Container 4', id: 'container-4'},
         {name: 'Container 5', id: 'container-5'}
-        ]
+        ],
+      componentTypes: [
+        {name: 'Card', id: 'CardComponent'},
+        {name: 'Sample', id: 'SampleComponent'}
+        ]        
     };
   },
   methods: {
@@ -175,12 +183,15 @@ button.sidebar-open {
   
   display: grid;
   
+  /*region Mobile: viewport w/ less than 500px */
   grid-template-columns: 1fr;
+  
   grid-template-rows: auto;
   grid-gap: 20px;
   
 }
 
+/* Tablet: viewport from 500px to 849px */
 @media only screen and (min-width: 500px) {
   .band {
     grid-template-columns: 1fr 1fr;
@@ -193,6 +204,7 @@ button.sidebar-open {
   }
 }
 
+/* Desktop: viewport from 850px */
 @media only screen and (min-width: 850px) {
   .band {
     grid-template-columns: 1fr 1fr 1fr 1fr;
