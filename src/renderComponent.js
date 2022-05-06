@@ -5,9 +5,14 @@ export default function renderComponent({ el, component, props, appContext }) {
   Object.assign(app._context, appContext) // must use Object.assign here
   app.mount(el)
 
-  return () => {
-    // destroy component
-    app?.unmount()
-    app = undefined
-  }
+  return {
+    props: props,
+    destroy: () => {
+      // destroy component
+      console.log('destroying the component...')
+      console.log(app)
+      app?.unmount()
+      app = undefined
+    }
+  } 
 }

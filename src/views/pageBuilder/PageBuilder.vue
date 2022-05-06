@@ -13,6 +13,13 @@
           <Checkbox class="element" name="replaceContent" v-model="replaceContent" :binary="true" />
           <label class="element" for="replaceContent">Replace Content</label>
         </div>
+        <div class="queue-container">          
+          <label class="element" for="replaceContent">Title</label>
+          <InputText class="element" type="text" v-model="selectedComponentTitle" />
+        </div>
+        <div>
+          <Button label="Apply" @click="applyPropsToSelectedComponent()" icon="pi pi-check" iconPos="right" />
+        </div>
       </div>      
     </Sidebar>  
 
@@ -42,7 +49,7 @@
 </template>
 
 <script setup>
-  import { ref, getCurrentInstance } from "vue";
+  import { ref, reactive, getCurrentInstance } from "vue";
   import renderComponent from "@/renderComponent";
   import pageLoad from "./pageModelLoader";
   import loadComponentByName from "./componentLoader";
@@ -51,10 +58,11 @@
   import Sidebar from 'primevue/sidebar';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
+  import InputText from 'primevue/inputtext';
+  import Button from 'primevue/button';
 
-  const { appContext } = getCurrentInstance();
-
-  let components = new Map();
+  const { appContext } = getCurrentInstance()
+  let components = new Map()
 
   // Add component method : Add component to specified container
   const addComponent = async (id, componentName, props, replaceContent) => {
@@ -85,7 +93,7 @@
     }
 
     // when this is the only tenant on container
-    if (position == 0) {
+    if (position === 0) {
       contentWrapper.style.minHeight = "100%"
     } else {
       const children = Array.from(document.getElementById(id).children)
@@ -99,17 +107,22 @@
 
     if (replaceContent) {
       // if container is occupied => unmount previous tenant
-      const tenant = components.get(wrapperName)
-      if (tenant) {
-        tenant?.();
+      const c = components.get(wrapperName)
+      console.log(`cleaning container: ${wrapperName}`)
+      if (c) {
+        console.log(c)
+        c.destroy?.();
       }
     }
+
+    // turn props object into reactive for allowing later programaticaly changes
+    const rprops = reactive(props)
 
     // render component into the DOM
     const newCmp = renderComponent({
         el: contentWrapper,
         component: component,
-        props: props,
+        props: rprops,
         appContext,
     });
 
@@ -125,8 +138,10 @@ export default {
   data() {
     return {
       containerId: "",
+      props: null,
       selectedTarget: null,
       selectedComponentType: null,
+      selectedComponentTitle: '',
       visibleLeft: false,
       replaceContent: true,
       targets: [
@@ -143,7 +158,22 @@ export default {
     };
   },
   methods: {
-    // add shared methods here.
+    applyPropsToSelectedComponent() {
+      const wrapperName = "container-1-contentWrapper-0"
+      const selectedComponent = this.components.get(wrapperName)
+      console.log(selectedComponent)
+      const newPropValue = this.selectedComponentTitle
+      console.log(`Title before: ${selectedComponent.props.heading}`)
+      console.log(`changing to: ${newPropValue}`)
+      selectedComponent.props.heading = this.selectedComponentTitle
+
+      console.log(`Title after: ${selectedComponent.props.heading}`) 
+    },
+    cleanAll() {
+      this.components.forEach(c => c.destroy?.())
+      this.components.clear()
+      console.log('all clean and done!')
+    }
   },  
   mounted() {
     // load the page model
@@ -155,9 +185,7 @@ export default {
     })
   },
   unmounted () {
-    this.components.forEach(c => c?.())
-    this.components.clear()
-    console.log('all clean and done!')
+    this.cleanAll()
   }
 };
 </script>
