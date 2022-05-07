@@ -171,12 +171,18 @@ export default {
       const wrapperName = "container-1-contentWrapper-0"
       const selectedComponent = this.components.get(wrapperName)
 
+      // console.log(selectedComponent)
+
       const props = selectedComponent.def.props
       const objArr = Object.keys(props)
+
+      objArr.forEach(p => { 
+        console.log(`${p} : ${typeof p}`)        
+      })
    
       const newPropValue = this.selectedComponentTitle
 
-      props[objArr[0]] = newPropValue
+      props[objArr[1]] = newPropValue
 
       // Add component to DOM
       this.addComponentToDOM(selectedComponent.component, selectedComponent.def.props, wrapperName, selectedComponent.def.container, true)
