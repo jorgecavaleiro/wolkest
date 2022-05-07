@@ -64,6 +64,29 @@
   const { appContext } = getCurrentInstance()
   let components = new Map()
 
+  const addComponentToDOM = (component, props, wrapperName, contentWrapper, replaceContent) => {
+    if (replaceContent) {
+      // if container is occupied => unmount previous tenant
+      const c = components.get(wrapperName)
+      // console.log(`cleaning container: ${wrapperName}`)
+      if (c) {
+        console.log(c)
+        c.destroy?.();
+      }
+    }
+
+    // turn props object into reactive for allowing later programaticaly changes
+    const rprops = reactive(props)
+
+    // render component into the DOM
+    const newCmp = renderComponent({
+        el: contentWrapper,
+        component: component,
+        props: rprops,
+        appContext,
+    });
+  }
+
   // Add component method : Add component to specified container
   const addComponent = async (id, componentName, props, replaceContent) => {
     let container = ref("root")
@@ -82,14 +105,14 @@
     if (replaceContent && position > 0) {
       wrapperName  = `${id}-contentWrapper-${position - 1}`      
       contentWrapper = document.getElementById(wrapperName)
-      console.log(`inserting into existing: ${wrapperName}`)
+      // console.log(`inserting into existing: ${wrapperName}`)
     } else {
       // must create a new wrapper for the added component
       contentWrapper = document.createElement("div")
       contentWrapper.id = wrapperName
       contentWrapper.style.width = "100%"
       document.getElementById(id).appendChild(contentWrapper)     
-      console.log(`added the content wrapper: ${contentWrapper.id}`)
+      // console.log(`added the content wrapper: ${contentWrapper.id}`)
     }
 
     // when this is the only tenant on container
@@ -105,26 +128,8 @@
     // Dynamically load the component
     let component = await loadComponentByName(componentName)
 
-    if (replaceContent) {
-      // if container is occupied => unmount previous tenant
-      const c = components.get(wrapperName)
-      console.log(`cleaning container: ${wrapperName}`)
-      if (c) {
-        console.log(c)
-        c.destroy?.();
-      }
-    }
-
-    // turn props object into reactive for allowing later programaticaly changes
-    const rprops = reactive(props)
-
-    // render component into the DOM
-    const newCmp = renderComponent({
-        el: contentWrapper,
-        component: component,
-        props: rprops,
-        appContext,
-    });
+    // Add component to DOM
+    const newCmp = addComponentToDOM(component, props, wrapperName, contentWrapper, replaceContent)
 
     // Add to components' collection
     components.set(wrapperName, newCmp)
@@ -163,11 +168,12 @@ export default {
       const selectedComponent = this.components.get(wrapperName)
       console.log(selectedComponent)
       const newPropValue = this.selectedComponentTitle
-      console.log(`Title before: ${selectedComponent.props.heading}`)
+      console.log(`Title before: ${selectedComponent.props.title}`)
       console.log(`changing to: ${newPropValue}`)
-      selectedComponent.props.heading = this.selectedComponentTitle
+      // selectedComponent.props.heading = this.selectedComponentTitle
+      selectedComponent.props.title = this.selectedComponentTitle
 
-      console.log(`Title after: ${selectedComponent.props.heading}`) 
+      console.log(`Title after: ${selectedComponent.props.title}`) 
     },
     cleanAll() {
       this.components.forEach(c => c.destroy?.())
