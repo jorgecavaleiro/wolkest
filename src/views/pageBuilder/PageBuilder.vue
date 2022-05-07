@@ -68,10 +68,10 @@
     if (replaceContent) {
       // if container is occupied => unmount previous tenant
       const c = components.get(wrapperName)
-      // console.log(`cleaning container: ${wrapperName}`)
+
       if (c) {
         console.log(c)
-        c.destroy?.();
+        c.def?.destroy?.();
       }
     }
 
@@ -85,6 +85,8 @@
         props: rprops,
         appContext,
     });
+
+    return newCmp
   }
 
   // Add component method : Add component to specified container
@@ -131,8 +133,10 @@
     // Add component to DOM
     const newCmp = addComponentToDOM(component, props, wrapperName, contentWrapper, replaceContent)
 
+    let cmp = { def: newCmp, component: component }
+
     // Add to components' collection
-    components.set(wrapperName, newCmp)
+    components.set(wrapperName, cmp)
   };
 </script>
 
@@ -166,17 +170,19 @@ export default {
     applyPropsToSelectedComponent() {
       const wrapperName = "container-1-contentWrapper-0"
       const selectedComponent = this.components.get(wrapperName)
-      console.log(selectedComponent)
-      const newPropValue = this.selectedComponentTitle
-      console.log(`Title before: ${selectedComponent.props.title}`)
-      console.log(`changing to: ${newPropValue}`)
-      // selectedComponent.props.heading = this.selectedComponentTitle
-      selectedComponent.props.title = this.selectedComponentTitle
 
-      console.log(`Title after: ${selectedComponent.props.title}`) 
+      const props = selectedComponent.def.props
+      const objArr = Object.keys(props)
+   
+      const newPropValue = this.selectedComponentTitle
+
+      props[objArr[0]] = newPropValue
+
+      // Add component to DOM
+      this.addComponentToDOM(selectedComponent.component, selectedComponent.def.props, wrapperName, selectedComponent.def.container, true)
     },
     cleanAll() {
-      this.components.forEach(c => c.destroy?.())
+      this.components.forEach(c => c.def?.destroy?.())
       this.components.clear()
       console.log('all clean and done!')
     }

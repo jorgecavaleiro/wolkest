@@ -6,7 +6,7 @@ export default function renderComponent({ el, component, props, appContext }) {
   Object.assign(app._context, appContext) // must use Object.assign here
   app.mount(el)
 
-  return {
+  const cmpObj = {
     props: props,
     container: el,
     destroy: () => {
@@ -17,4 +17,6 @@ export default function renderComponent({ el, component, props, appContext }) {
       app = undefined
     }
   } 
+
+  return cmpObj
 }
