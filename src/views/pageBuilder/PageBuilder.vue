@@ -3,22 +3,27 @@
     <Sidebar v-model:visible="visibleLeft">
       <div class="stack-container">
         <div>
-          <Dropdown class="element" v-model="selectedComponentType" :options="componentTypes" optionLabel="name" placeholder="Select a Component" />
+          <Dropdown class="element" v-model="grabbedComponentType" :options="componentTypes" optionLabel="name" placeholder="Select a Component" />
         </div>
         <div class="queue-container">
-          <Dropdown class="element" v-model="selectedTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
-          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(selectedTarget.id, selectedComponentType.id, { key: counter, msg: 'hi there!'}, replaceContent)" />    
+          <Dropdown class="element" v-model="dropTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
+          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(dropTarget.id, grabbedComponentType.id, { key: counter, msg: 'hi there!'}, replaceContent)" />    
         </div>
         <div class="queue-container">
           <Checkbox class="element" name="replaceContent" v-model="replaceContent" :binary="true" />
           <label class="element" for="replaceContent">Replace Content</label>
         </div>
-        <div class="queue-container">          
-          <label class="element" for="replaceContent">Title</label>
-          <InputText class="element" type="text" v-model="selectedComponentTitle" />
+        <div>
+          <h5>Attributes</h5>
+        </div>
+        <div v-if="selectedComponent">
+          <div v-for="prop in selectedComponentPropsKeys" :key="prop" class="queue-container">          
+            <label class="element" for="replaceContent">{{prop}}</label>
+            <InputText class="element" type="text" v-model="selectedComponentProps[prop]" />
+          </div>
         </div>
         <div>
-          <Button label="Apply" @click="applyPropsToSelectedComponent()" icon="pi pi-check" iconPos="right" />
+          <Button class="element" label="Apply" @click="applyPropsToSelectedComponent()" icon="pi pi-check" iconPos="right" />
         </div>
       </div>      
     </Sidebar>  
@@ -71,7 +76,7 @@
 
       if (c) {
         console.log(c)
-        c.def?.destroy?.();
+        c.def.destroy?.();
       }
     }
 
@@ -90,7 +95,7 @@
   }
 
   // Add component method : Add component to specified container
-  const addComponent = async (id, componentName, props, replaceContent) => {
+  const addComponent = async (id, componentName, props, replaceContent, callback) => {
     let container = ref("root")
     if (id) {
       container.value = document.getElementById(id)    
@@ -119,7 +124,7 @@
 
     // when this is the only tenant on container
     if (position === 0) {
-      contentWrapper.style.minHeight = "100%"
+      contentWrapper.style.minHeight = "100%"      
     } else {
       const children = Array.from(document.getElementById(id).children)
       children.forEach(div => {
@@ -130,13 +135,16 @@
     // Dynamically load the component
     let component = await loadComponentByName(componentName)
 
-    // Add component to DOM
+     // Add component to DOM
     const newCmp = addComponentToDOM(component, props, wrapperName, contentWrapper, replaceContent)
 
     let cmp = { def: newCmp, component: component }
 
     // Add to components' collection
     components.set(wrapperName, cmp)
+
+    // callback
+    if (callback) callback(newCmp)
   };
 </script>
 
@@ -148,9 +156,13 @@ export default {
     return {
       containerId: "",
       props: null,
-      selectedTarget: null,
-      selectedComponentType: null,
-      selectedComponentTitle: '',
+      dropTarget: null,
+      grabbedComponentType: null,
+      grabbedComponentTitle: '',
+      selectedComponent: null,
+      selectedWrapperName: '',
+      selectedComponentProps: null,
+      selectedComponentPropsKeys: [],
       visibleLeft: false,
       replaceContent: true,
       targets: [
@@ -167,28 +179,41 @@ export default {
     };
   },
   methods: {
+    setContentWrapperEvents(component) {
+      // wrapper events
+      
+      const contentWrapper = component.container
+
+      contentWrapper.addEventListener('mouseenter', (event) => {
+        event.target.style.border = "thick solid #0000FF"
+        const wrapperName = event.target.id
+
+        this.selectedWrapperName = wrapperName
+        this.selectedComponent = this.components.get(wrapperName)
+        this.selectedComponentProps = this.selectedComponent.def.props
+        this.selectedComponentPropsKeys = Object.keys(this.selectedComponentProps)
+
+        });
+
+      contentWrapper.addEventListener('mouseleave', (event) => {
+        event.target.style.border = "none"      
+        });     
+    },
     applyPropsToSelectedComponent() {
-      const wrapperName = "container-1-contentWrapper-0"
-      const selectedComponent = this.components.get(wrapperName)
 
-      // console.log(selectedComponent)
-
-      const props = selectedComponent.def.props
-      const objArr = Object.keys(props)
-
-      objArr.forEach(p => { 
-        console.log(`${p} : ${typeof p}`)        
-      })
-   
-      const newPropValue = this.selectedComponentTitle
-
-      props[objArr[1]] = newPropValue
+      // this.selectedComponentPropsKeys.forEach(p => { 
+      //   console.log(`${p} : ${typeof p}`)        
+      // })
 
       // Add component to DOM
-      this.addComponentToDOM(selectedComponent.component, selectedComponent.def.props, wrapperName, selectedComponent.def.container, true)
+      this.addComponentToDOM(this.selectedComponent.component, 
+        this.selectedComponent.def.props, 
+        this.selectedWrapperName, 
+        this.selectedComponent.def.container, 
+        true)
     },
     cleanAll() {
-      this.components.forEach(c => c.def?.destroy?.())
+      this.components.forEach(c => c.def.destroy?.())
       this.components.clear()
       console.log('all clean and done!')
     }
@@ -196,10 +221,16 @@ export default {
   mounted() {
     // load the page model
     const componentsDef = pageLoad()
+
+    // define the callback call
+    const callback = (c) => {
+        this.setContentWrapperEvents(c)
+    }
+
     componentsDef.forEach((c, index) => {
       // console.log(c);
       // console.log(`adding component ${c.id} to the container: ${index}`)
-      this.addComponent(index, 'CardComponent', c.props, this.replaceContent)
+      this.addComponent(index, 'CardComponent', c.props, this.replaceContent, callback)      
     })
   },
   unmounted () {
@@ -278,6 +309,7 @@ button.sidebar-open {
 
 .element {
   margin: 1rem 1rem 0 0;
+  width: 100%;
 }
 
 
