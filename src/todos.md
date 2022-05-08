@@ -6,6 +6,6 @@ When component added to container without replacing any existing, it's not setti
 ```
 ## Refactor
 ```
-Pass the setup root script methos into the components' Vue structure (methosd).
+Pass the setup root script methods into the components' Vue structure (methods).
 Nevertheless the runtime load does not work inside component struct, so still needs to stay on root
 ``` 
