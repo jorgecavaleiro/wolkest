@@ -10,9 +10,40 @@
 </template>
 
 <script>
-export default {
-    props: ['heading', 'paragraph', 'footnote', 'image', 'url'],    
-}
+import { ref, defineComponent, onUnmounted } from 'vue'
+
+export default defineComponent({
+  name: 'CardComponent',
+  props: {
+    heading: {
+      type: String,
+      required: false,
+    },
+    paragraph: {
+      type: String,
+      required: false,
+    },    
+    footnote: {
+      type: String,
+      required: false,
+    },     
+    image: {
+      type: String,
+      required: false,
+    },    
+    url: {
+      type: String,
+      required: false,
+    },        
+  },
+  setup(props) {
+    const count = ref(0)
+
+    onUnmounted(() => console.log('unmounting', props.msg))
+
+    return { count }
+  },
+})
 </script>
 
 <style scoped>

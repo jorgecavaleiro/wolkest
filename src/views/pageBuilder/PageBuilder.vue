@@ -7,7 +7,7 @@
         </div>
         <div class="queue-container">
           <Dropdown class="element" v-model="dropTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
-          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(dropTarget.id, grabbedComponentType.id, { key: counter, msg: 'hi there!'}, replaceContent)" />    
+          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(dropTarget.id, grabbedComponentType.id, null, replaceContent)" />    
         </div>
         <div class="queue-container">
           <Checkbox class="element" name="replaceContent" v-model="replaceContent" :binary="true" />
@@ -70,6 +70,22 @@
   let components = new Map()
 
   const addComponentToDOM = (component, props, wrapperName, contentWrapper, replaceContent) => {
+    // when there aren't any predefined props, initialize them
+    if(props === null || props === undefined) {
+      const cprops = component.props
+
+      if(!cprops || typeof(cprops) !== "object" || Array.isArray(cprops)) {
+        console.error('Invalid component: properties are undefined')
+        return;
+      }
+
+      const keys = Object.keys(cprops)
+      props = {}
+      keys.forEach(key => {
+        props[key] = ""        
+      })
+    }
+
     if (replaceContent) {
       // if container is occupied => unmount previous tenant
       const c = components.get(wrapperName)
@@ -78,7 +94,7 @@
         console.log(c)
         c.def.destroy?.();
       }
-    }
+    }    
 
     // turn props object into reactive for allowing later programaticaly changes
     const rprops = reactive(props)
@@ -94,16 +110,7 @@
     return newCmp
   }
 
-  // Add component method : Add component to specified container
-  const addComponent = async (id, componentName, props, replaceContent, callback) => {
-    let container = ref("root")
-    if (id) {
-      container.value = document.getElementById(id)    
-    } else {
-      console.log('No target container. Aborting...')
-      return
-    }
-
+  const getComponentWrapper = (id, replaceContent) => {
     // Get the contents wrapper or create if new
     let contentWrapper = null
     const position = document.getElementById(id).children.length 
@@ -131,17 +138,33 @@
         div.style.minHeight = "auto"
       })
     }
+
+    return { el: contentWrapper, name: wrapperName }
+  }
+
+  // Add component method : Add component to specified container
+  const addComponent = async (id, componentName, props, replaceContent, callback) => {
+    let container = ref("root")
+    if (id) {
+      container.value = document.getElementById(id)    
+    } else {
+      console.log('No target container. Aborting...')
+      return
+    }
+
+    // Get the component wrapper div
+    const contentWrapper = getComponentWrapper(id, replaceContent)
     
     // Dynamically load the component
     let component = await loadComponentByName(componentName)
 
      // Add component to DOM
-    const newCmp = addComponentToDOM(component, props, wrapperName, contentWrapper, replaceContent)
+    const newCmp = addComponentToDOM(component, props, contentWrapper.name, contentWrapper.el, replaceContent)
 
     let cmp = { def: newCmp, component: component }
 
     // Add to components' collection
-    components.set(wrapperName, cmp)
+    components.set(contentWrapper.name, cmp)
 
     // callback
     if (callback) callback(newCmp)
