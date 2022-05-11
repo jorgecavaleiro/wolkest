@@ -69,7 +69,9 @@
   const { appContext } = getCurrentInstance()
   let components = new Map()
 
-  const addComponentToDOM = (component, props, wrapperName, contentWrapper, replaceContent) => {
+  console.log(components)
+
+  const addComponentToDOM = (component, props, contentWrapper) => {
     // when there aren't any predefined props, initialize them
     if(props === null || props === undefined) {
       const cprops = component.props
@@ -85,16 +87,6 @@
         props[key] = ""        
       })
     }
-
-    if (replaceContent) {
-      // if container is occupied => unmount previous tenant
-      const c = components.get(wrapperName)
-
-      if (c) {
-        console.log(c)
-        c.def.destroy?.();
-      }
-    }    
 
     // turn props object into reactive for allowing later programaticaly changes
     const rprops = reactive(props)
@@ -198,16 +190,15 @@ export default {
     },
     applyPropsToSelectedComponent() {
 
-      // this.selectedComponentPropsKeys.forEach(p => { 
-      //   console.log(`${p} : ${typeof p}`)        
-      // })
+      if(!this.selectedComponent) return
 
+      // destroy previous instance
+      this.selectedComponent.def.destroy?.();
+      
       // Add component to DOM
       this.addComponentToDOM(this.selectedComponent.component, 
         this.selectedComponent.def.props, 
-        this.selectedWrapperName, 
-        this.selectedComponent.def.container, 
-        true)
+        this.selectedComponent.def.container)
     },
 
     // Add component method : Add component to specified container
@@ -226,8 +217,14 @@ export default {
       // Dynamically load the component
       let component = await loadComponentByName(componentName)
 
+      // Destroy replaced
+      if(replaceContent) {
+        const replacedComponent = this.components.get(contentWrapper.name)
+        replacedComponent?.def.destroy?.();
+      }
+
       // Add component to DOM
-      const newCmp = this.addComponentToDOM(component, props, contentWrapper.name, contentWrapper.el, replaceContent)
+      const newCmp = this.addComponentToDOM(component, props, contentWrapper.el)
 
       let cmp = { def: newCmp, component: component }
 
