@@ -55,7 +55,7 @@
 
 <script setup>
   import { ref, reactive, getCurrentInstance } from "vue";
-  import renderComponent from "./dep/renderComponent";
+  import domUtils from "./dep/domUtils";
   import pageLoad from "./dep/pageModelLoader";
   import loadComponentByName from "./dep/componentLoader";
 
@@ -100,7 +100,7 @@
     const rprops = reactive(props)
 
     // render component into the DOM
-    const newCmp = renderComponent({
+    const newCmp = domUtils.renderComponent({
         el: contentWrapper,
         component: component,
         props: rprops,
@@ -109,66 +109,8 @@
 
     return newCmp
   }
-
-  const getComponentWrapper = (id, replaceContent) => {
-    // Get the contents wrapper or create if new
-    let contentWrapper = null
-    const position = document.getElementById(id).children.length 
-    let wrapperName = `${id}-contentWrapper-${position}`
-    
-    if (replaceContent && position > 0) {
-      wrapperName  = `${id}-contentWrapper-${position - 1}`      
-      contentWrapper = document.getElementById(wrapperName)
-      // console.log(`inserting into existing: ${wrapperName}`)
-    } else {
-      // must create a new wrapper for the added component
-      contentWrapper = document.createElement("div")
-      contentWrapper.id = wrapperName
-      contentWrapper.style.width = "100%"
-      document.getElementById(id).appendChild(contentWrapper)     
-      // console.log(`added the content wrapper: ${contentWrapper.id}`)
-    }
-
-    // when this is the only tenant on container
-    if (position === 0) {
-      contentWrapper.style.minHeight = "100%"      
-    } else {
-      const children = Array.from(document.getElementById(id).children)
-      children.forEach(div => {
-        div.style.minHeight = "auto"
-      })
-    }
-
-    return { el: contentWrapper, name: wrapperName }
-  }
-
-  // Add component method : Add component to specified container
-  const addComponent = async (id, componentName, props, replaceContent, callback) => {
-    let container = ref("root")
-    if (id) {
-      container.value = document.getElementById(id)    
-    } else {
-      console.log('No target container. Aborting...')
-      return
-    }
-
-    // Get the component wrapper div
-    const contentWrapper = getComponentWrapper(id, replaceContent)
-    
-    // Dynamically load the component
-    let component = await loadComponentByName(componentName)
-
-     // Add component to DOM
-    const newCmp = addComponentToDOM(component, props, contentWrapper.name, contentWrapper.el, replaceContent)
-
-    let cmp = { def: newCmp, component: component }
-
-    // Add to components' collection
-    components.set(contentWrapper.name, cmp)
-
-    // callback
-    if (callback) callback(newCmp)
-  };
+ 
+  console.log(addComponentToDOM)
 </script>
 
 
@@ -202,6 +144,38 @@ export default {
     };
   },
   methods: {
+    getComponentWrapper(id, replaceContent) {
+      // Get the contents wrapper or create if new
+      let contentWrapper = null
+      const position = document.getElementById(id).children.length 
+      let wrapperName = `${id}-contentWrapper-${position}`
+      
+      if (replaceContent && position > 0) {
+        wrapperName  = `${id}-contentWrapper-${position - 1}`      
+        contentWrapper = document.getElementById(wrapperName)
+        // console.log(`inserting into existing: ${wrapperName}`)
+      } else {
+        // must create a new wrapper for the added component
+        contentWrapper = document.createElement("div")
+        contentWrapper.id = wrapperName
+        contentWrapper.style.width = "100%"
+        document.getElementById(id).appendChild(contentWrapper)     
+        // console.log(`added the content wrapper: ${contentWrapper.id}`)
+      }
+
+      // when this is the only tenant on container
+      if (position === 0) {
+        contentWrapper.style.minHeight = "100%"      
+      } else {
+        const children = Array.from(document.getElementById(id).children)
+        children.forEach(div => {
+          div.style.minHeight = "auto"
+        })
+      }
+
+      return { el: contentWrapper, name: wrapperName }
+    },
+
     setContentWrapperEvents(component) {
       // wrapper events
       
@@ -235,6 +209,34 @@ export default {
         this.selectedComponent.def.container, 
         true)
     },
+
+    // Add component method : Add component to specified container
+    async addComponent (id, componentName, props, replaceContent, callback) {
+      let container = ref("root")
+      if (id) {
+        container.value = document.getElementById(id)    
+      } else {
+        console.log('No target container. Aborting...')
+        return
+      }
+
+      // Get the component wrapper div
+      const contentWrapper = this.getComponentWrapper(id, replaceContent)
+      
+      // Dynamically load the component
+      let component = await loadComponentByName(componentName)
+
+      // Add component to DOM
+      const newCmp = this.addComponentToDOM(component, props, contentWrapper.name, contentWrapper.el, replaceContent)
+
+      let cmp = { def: newCmp, component: component }
+
+      // Add to components' collection
+      this.components.set(contentWrapper.name, cmp)
+
+      // callback
+      if (callback) callback(newCmp)
+    },    
     cleanAll() {
       this.components.forEach(c => c.def.destroy?.())
       this.components.clear()

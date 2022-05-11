@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 
-export default function renderComponent({ el, component, props, appContext }) {
+function renderComponent({ el, component, props, appContext }) {
   // console.log(component)
   let app = createApp(component, props)
   Object.assign(app._context, appContext) // must use Object.assign here
@@ -20,3 +20,5 @@ export default function renderComponent({ el, component, props, appContext }) {
 
   return cmpObj
 }
+
+export default { renderComponent }
