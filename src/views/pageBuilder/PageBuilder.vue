@@ -55,9 +55,9 @@
 
 <script setup>
   import { ref, reactive, getCurrentInstance } from "vue";
-  import renderComponent from "@/renderComponent";
-  import pageLoad from "./pageModelLoader";
-  import loadComponentByName from "./componentLoader";
+  import renderComponent from "./dep/renderComponent";
+  import pageLoad from "./dep/pageModelLoader";
+  import loadComponentByName from "./dep/componentLoader";
 
   // Prime Vue Components
   import Sidebar from 'primevue/sidebar';
