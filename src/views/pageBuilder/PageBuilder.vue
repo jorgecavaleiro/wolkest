@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-  import { ref, reactive, getCurrentInstance } from "vue";
+  import { ref, getCurrentInstance } from "vue";
   import domUtils from "./dep/domUtils";
   import pageLoad from "./dep/pageModelLoader";
   import loadComponentByName from "./dep/componentLoader";
@@ -67,50 +67,28 @@
   import Button from 'primevue/button';
 
   const { appContext } = getCurrentInstance()
-  let components = new Map()
 
-  console.log(components)
-
+  // eslint-disable-next-line no-unused-vars
   const addComponentToDOM = (component, props, contentWrapper) => {
-    // when there aren't any predefined props, initialize them
-    if(props === null || props === undefined) {
-      const cprops = component.props
-
-      if(!cprops || typeof(cprops) !== "object" || Array.isArray(cprops)) {
-        console.error('Invalid component: properties are undefined')
-        return;
-      }
-
-      const keys = Object.keys(cprops)
-      props = {}
-      keys.forEach(key => {
-        props[key] = ""        
-      })
-    }
-
-    // turn props object into reactive for allowing later programaticaly changes
-    const rprops = reactive(props)
-
+  
     // render component into the DOM
     const newCmp = domUtils.renderComponent({
         el: contentWrapper,
         component: component,
-        props: rprops,
+        props: props,
         appContext,
     });
 
     return newCmp
   }
- 
-  console.log(addComponentToDOM)
 </script>
-
 
 <script>
 export default {
   name: "VC-PageBuilder",
   data() {
     return {
+      components: new Map(),
       containerId: "",
       props: null,
       dropTarget: null,
@@ -136,30 +114,29 @@ export default {
     };
   },
   methods: {
-    getComponentWrapper(id, replaceContent) {
+    getComponentWrapper(containerId, replaceContent) {
       // Get the contents wrapper or create if new
+      const wrapperTextSep = "contentWrapper"
       let contentWrapper = null
-      const position = document.getElementById(id).children.length 
-      let wrapperName = `${id}-contentWrapper-${position}`
+      const position = document.getElementById(containerId).children.length 
+      let wrapperName = `${containerId}-${wrapperTextSep}-${position}`
       
       if (replaceContent && position > 0) {
-        wrapperName  = `${id}-contentWrapper-${position - 1}`      
+        wrapperName  = `${containerId}-${wrapperTextSep}-${position - 1}`      
         contentWrapper = document.getElementById(wrapperName)
-        // console.log(`inserting into existing: ${wrapperName}`)
       } else {
         // must create a new wrapper for the added component
         contentWrapper = document.createElement("div")
         contentWrapper.id = wrapperName
         contentWrapper.style.width = "100%"
-        document.getElementById(id).appendChild(contentWrapper)     
-        // console.log(`added the content wrapper: ${contentWrapper.id}`)
+        document.getElementById(containerId).appendChild(contentWrapper)     
       }
 
       // when this is the only tenant on container
       if (position === 0) {
         contentWrapper.style.minHeight = "100%"      
       } else {
-        const children = Array.from(document.getElementById(id).children)
+        const children = Array.from(document.getElementById(containerId).children)
         children.forEach(div => {
           div.style.minHeight = "auto"
         })
@@ -202,17 +179,17 @@ export default {
     },
 
     // Add component method : Add component to specified container
-    async addComponent (id, componentName, props, replaceContent, callback) {
+    async addComponent (containerId, componentName, props, replaceContent, callback) {
       let container = ref("root")
-      if (id) {
-        container.value = document.getElementById(id)    
+      if (containerId) {
+        container.value = document.getElementById(containerId)    
       } else {
         console.log('No target container. Aborting...')
         return
       }
 
       // Get the component wrapper div
-      const contentWrapper = this.getComponentWrapper(id, replaceContent)
+      const contentWrapper = this.getComponentWrapper(containerId, replaceContent)
       
       // Dynamically load the component
       let component = await loadComponentByName(componentName)
