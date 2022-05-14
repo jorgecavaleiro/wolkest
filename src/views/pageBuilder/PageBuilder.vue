@@ -94,6 +94,8 @@ export default {
       dropTarget: null,
       grabbedComponentType: null,
       grabbedComponentTitle: '',
+      focusComponent: null,
+      focusWrapperName: '',
       selectedComponent: null,
       selectedWrapperName: '',
       selectedComponentProps: null,
@@ -158,18 +160,33 @@ export default {
       const contentWrapper = compDef.container
 
       contentWrapper.addEventListener('mouseenter', (event) => {
-        event.target.style.border = "thick solid #0000FF"
+        event.target.style.border = "medium dotted #dedede"
         const targetContainerId = event.target.id
 
-        this.selectedWrapperName = targetContainerId
-        this.selectedComponent = this.components.get(targetContainerId)
-        this.selectedComponentProps = this.selectedComponent.def.props
-        this.selectedComponentPropsKeys = Object.keys(this.selectedComponentProps)
+        this.focusWrapperName = targetContainerId
+        this.focusComponent = this.components.get(targetContainerId)
 
         });
 
+      contentWrapper.addEventListener('click', (event) => {
+        event.preventDefault()
+        const previousSelectedContainer = document.getElementById(this.selectedWrapperName)
+        if (previousSelectedContainer) {
+          previousSelectedContainer.style.border = "none"
+        }
+        const wrapperElem = document.getElementById(this.focusWrapperName)
+        console.log(wrapperElem)
+        wrapperElem.style.border = "medium solid #0000ff"
+        this.selectedWrapperName = this.focusWrapperName
+        this.selectedComponent = this.components.get(this.selectedWrapperName)
+        this.selectedComponentProps = this.selectedComponent.def.props
+        this.selectedComponentPropsKeys = Object.keys(this.selectedComponentProps)
+
+      });        
+
       contentWrapper.addEventListener('mouseleave', (event) => {
-        event.target.style.border = "none"      
+        if(event.target.id !== this.selectedWrapperName)
+          event.target.style.border = "none"      
         });     
     },
     applyPropsToSelectedComponent() {
