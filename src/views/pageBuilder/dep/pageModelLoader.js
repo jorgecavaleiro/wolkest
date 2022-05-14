@@ -7,6 +7,7 @@ export default function loadPage() {
     componentsDef.set("container-1", 
     { 
         id: 'card-1', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'How to Code a Scrolling “Alien Lander” Website',
             paragraph: '',
@@ -19,6 +20,7 @@ export default function loadPage() {
     componentsDef.set("container-2", 
     { 
         id: 'card-2', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'How to Conduct Remote Usability Testing',
             paragraph: '',
@@ -31,6 +33,7 @@ export default function loadPage() {
     componentsDef.set("container-3", 
     { 
         id: 'card-3', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'Created by You, July Edition',
             paragraph: 'Welcome to our monthly feature of fantastic tutorial results created by you, the Envato Tuts+ community!',
@@ -43,6 +46,7 @@ export default function loadPage() {
     componentsDef.set("container-4", 
     { 
         id: 'card-4', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'How to Code a Scrolling “Alien Lander” Website',
             paragraph: 'We’ll be putting things together so that as you scroll down from the top of the page you’ll see an “Alien Lander” making its way to touch down.',
@@ -55,6 +59,7 @@ export default function loadPage() {
     componentsDef.set("container-5", 
     { 
         id: 'card-5', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'How to Create a “Stranger Things” Text Effect in Adobe Photoshop',
             paragraph: '',
@@ -67,6 +72,7 @@ export default function loadPage() {
     componentsDef.set("container-6", 
     { 
         id: 'card-6', 
+        componentName: 'CardComponent',
         props: { 
             heading: '5 Inspirational Business Portraits and How to Make Your Own',
             paragraph: '',
@@ -79,6 +85,7 @@ export default function loadPage() {
     componentsDef.set("container-7", 
     { 
         id: 'card-7', 
+        componentName: 'CardComponent',
         props: { 
             heading: 'Notes From Behind the Firewall: The State of Web Design in China',
             paragraph: '',

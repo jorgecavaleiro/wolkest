@@ -7,7 +7,7 @@
         </div>
         <div class="queue-container">
           <Dropdown class="element" v-model="dropTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
-          <PV-Button class="element" icon="pi pi-arrow-right" @click="addComponent(dropTarget.id, grabbedComponentType.id, null, replaceContent)" />    
+          <PV-Button class="element" icon="pi pi-arrow-right" @click="onComponentDroped(dropTarget.id, grabbedComponentType.id, replaceContent)" />    
         </div>
         <div class="queue-container">
           <Checkbox class="element" name="replaceContent" v-model="replaceContent" :binary="true" />
@@ -114,6 +114,13 @@ export default {
     };
   },
   methods: {
+    onComponentDroped(targetContainerId, componentName, replaceContent) {
+      // define the callback call
+      const callback = (c) => {
+          this.setContentWrapperEvents(c)
+      }
+      this.addComponent(targetContainerId, componentName, null, replaceContent, callback)
+    },
     getComponentWrapper(containerId, replaceContent) {
       // Get the contents wrapper or create if new
       const wrapperTextSep = "contentWrapper"
@@ -145,17 +152,17 @@ export default {
       return { el: contentWrapper, name: wrapperName }
     },
 
-    setContentWrapperEvents(component) {
+    setContentWrapperEvents(compDef) {
       // wrapper events
       
-      const contentWrapper = component.container
+      const contentWrapper = compDef.container
 
       contentWrapper.addEventListener('mouseenter', (event) => {
         event.target.style.border = "thick solid #0000FF"
-        const wrapperName = event.target.id
+        const targetContainerId = event.target.id
 
-        this.selectedWrapperName = wrapperName
-        this.selectedComponent = this.components.get(wrapperName)
+        this.selectedWrapperName = targetContainerId
+        this.selectedComponent = this.components.get(targetContainerId)
         this.selectedComponentProps = this.selectedComponent.def.props
         this.selectedComponentPropsKeys = Object.keys(this.selectedComponentProps)
 
@@ -229,7 +236,7 @@ export default {
     componentsDef.forEach((c, index) => {
       // console.log(c);
       // console.log(`adding component ${c.id} to the container: ${index}`)
-      this.addComponent(index, 'CardComponent', c.props, this.replaceContent, callback)      
+      this.addComponent(index, c.componentName, c.props, this.replaceContent, callback)      
     })
   },
   unmounted () {
