@@ -8,8 +8,10 @@
 
 <script setup>
   import { getCurrentInstance } from 'vue'
+  import LayoutBuilderVue from '@/components/LayoutBuilder.vue';
   const { appContext } = getCurrentInstance()
   console.log( appContext )
+  console.log(LayoutBuilderVue)
 </script>
 
 <style scoped>
