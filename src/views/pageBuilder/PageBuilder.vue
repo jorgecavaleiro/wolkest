@@ -160,6 +160,7 @@ export default {
       const contentWrapper = compDef.container
 
       contentWrapper.addEventListener('mouseenter', (event) => {
+        if(event.target.id === this.selectedWrapperName) return
         event.target.style.border = "medium dotted #dedede"
         const targetContainerId = event.target.id
 
