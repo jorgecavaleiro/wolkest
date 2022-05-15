@@ -1,13 +1,15 @@
 <template>
-  <h1>{{ msg }}</h1>
+  <div class="container">
+    <h1>{{ msg }}</h1>
 
-  <PV-Button @click="count++">count is: {{ count }}</PV-Button>
-  <p>
-    Edit
-    <code>components/SampleComponent.vue</code> to test hot module replacement.
-  </p>
+    <PV-Button @click="count++">count is: {{ count }}</PV-Button>
+    <p>
+      Edit
+      <code>components/SampleComponent.vue</code> to test hot module replacement.
+    </p>
 
-  <router-link to="/about">Go to About</router-link>
+    <router-link to="/about">Go to About</router-link>   
+  </div>   
 </template>
 
 <script>
@@ -32,6 +34,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.container {
+  text-align: center;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
 a {
   color: #42b983;
 }

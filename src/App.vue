@@ -1,9 +1,9 @@
 <template>
   <main>
-    <div class="container">
+    <div class="home-page-container">
       <nav class="navbar">
         <div class="nav_icon" onclick="toggleSidebar()">
-          <i class="fa fa-bars" aria-hidden="true"></i>
+          <i class="pi pi-bars" aria-hidden="true"></i>
         </div>
         <div class="navbar__left">
           <a href="#">Subscribers</a>
@@ -18,7 +18,7 @@
             <i class="pi pi-clock" aria-hidden="true"></i>
           </a>
           <a href="#">
-            <img width="30" src="assets/avatar.svg" alt="" />
+            <img width="30" src="./assets/avatar.svg" alt="" />
             <!-- <i class="fa fa-user-circle-o" aria-hidden="true"></i> -->
           </a>
         </div>
@@ -33,12 +33,12 @@
       <div id="sidebar">
         <div class="sidebar__title">
           <div class="sidebar__img">
-            <img src="assets/logo.png" alt="logo" />
+            <img src="./assets/logo.png" alt="logo" />
             <h1>Wolkest</h1>
           </div>
           <i
             onclick="closeSidebar()"
-            class="pi pi-bars"
+            class="pi pi-chevron-left"
             id="sidebarIcon"
             aria-hidden="true"
           ></i>
@@ -52,13 +52,13 @@
             <h2>Pages</h2>
             <div class="sidebar__link">
               <i class="pi pi-bookmark" aria-hidden="true"></i>
-              <router-link to="/">Sample</router-link>
+              <router-link to="/">Sample Page</router-link>
             </div>
             
             <h2>Data</h2>
             <div class="sidebar__link">
               <i class="pi pi-database"></i>
-              <router-link to="/about">Sample Database</router-link>
+              <router-link to="/about">Sample Store</router-link>
             </div>          
           </div>          
         </nav>
@@ -142,10 +142,10 @@ export default {
   color: #3b9668;
 }
 
-.container {
+.home-page-container {
   display: grid;
   height: 100vh;
-  grid-template-columns: 0.8fr 1fr 1fr 1fr;
+  grid-template-columns: 0.4fr 1fr 1fr 1fr;
   grid-template-rows: 0.2fr 3fr;
   grid-template-areas:
     "sidebar nav nav nav"
@@ -228,25 +228,6 @@ main {
   margin-right: 20px;
 }
 
-.main__greeting > h1 {
-  font-size: 24px;
-  color: #2e4a66;
-  margin-bottom: 5px;
-}
-
-.main__greeting > p {
-  font-size: 14px;
-  font-weight: 700;
-  color: #a5aaad;
-}
-
-.main__cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 30px;
-  margin: 20px 0;
-}
-
 /*  SIDEBAR STARTS HERE  */
 
 #sidebar {
@@ -273,7 +254,8 @@ main {
 }
 
 .sidebar__title > div > img {
-  width: 75px;
+  width: 24px;
+  margin: 0 1rem 0 0;
   object-fit: contain;
 }
 
@@ -284,7 +266,7 @@ main {
 
 .sidebar__title > i {
   font-size: 18px;
-  display: none;
+  display: inline;
 }
 
 .sidebar__menu > h2 {
@@ -348,8 +330,20 @@ main {
   position: absolute;
 }
 
+@media only screen and (max-width: 1940px) {
+  .home-page-container {
+    grid-template-columns: 0.6fr 1fr 1fr 1fr;
+  }  
+}
+
+@media only screen and (max-width: 1640px) {
+  .home-page-container {
+    grid-template-columns: 0.8fr 1fr 1fr 1fr;
+  }  
+}
+
 @media only screen and (max-width: 978px) {
-  .container {
+  .home-page-container {
     grid-template-columns: 1fr;
     /* grid-template-rows: 0.2fr 2.2fr; */
     grid-template-rows: 0.2fr 3fr;

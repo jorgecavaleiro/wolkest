@@ -1,7 +1,8 @@
 <template>
-  <div class="home">
-    <Sidebar v-model:visible="visibleLeft">
-      <div class="stack-container">
+  <div>
+
+    <Dialog v-model:visible="displayTools" :style="{width: '320px'}" :contentStyle="{minHeight: '640px'}">
+      <div class="f-height stack-container">
         <div>
           <Dropdown class="element" v-model="grabbedComponentType" :options="componentTypes" optionLabel="name" placeholder="Select a Component" />
         </div>
@@ -25,10 +26,13 @@
         <div>
           <Button class="element" label="Apply" @click="applyPropsToSelectedComponent()" icon="pi pi-check" iconPos="right" />
         </div>
-      </div>      
-    </Sidebar>  
+      </div> 
+    </Dialog>
 
-    <PV-Button class="sidebar-open" icon="pi pi-arrow-right" @click="visibleLeft = true" />    
+
+
+<!-- 
+    <PV-Button class="sidebar-open" icon="pi pi-arrow-right" @click="visibleLeft = true" />     -->
 
     <div id="canvas" ref="root">
       <div class="support-grid"></div>
@@ -60,11 +64,11 @@
   import loadComponentByName from "./dep/componentLoader";
 
   // Prime Vue Components
-  import Sidebar from 'primevue/sidebar';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
   import InputText from 'primevue/inputtext';
   import Button from 'primevue/button';
+  import Dialog from 'primevue/dialog';
 
   const { appContext } = getCurrentInstance()
 
@@ -88,6 +92,7 @@ export default {
   name: "VC-PageBuilder",
   data() {
     return {
+      displayTools: true,
       components: new Map(),
       containerId: "",
       props: null,
@@ -183,6 +188,7 @@ export default {
         this.selectedComponentProps = this.selectedComponent.def.props
         this.selectedComponentPropsKeys = Object.keys(this.selectedComponentProps)
 
+        this.displayTools = true
       });        
 
       contentWrapper.addEventListener('mouseleave', (event) => {
@@ -334,6 +340,10 @@ button.sidebar-open {
 .element {
   margin: 1rem 1rem 0 0;
   width: 100%;
+}
+
+.f-height {
+  height: 100%;
 }
 
 
