@@ -1,8 +1,42 @@
 <template>
   <main>
-    <div class="home-page-container">
+    <div class="home-page-container" :class="{ has_sidebar: sidebarIsOpen }">
+      <menu id="sidebar">
+          <div class="sidebar__title">
+          <div class="sidebar__img">
+            <img src="./assets/logo.png" alt="logo" />
+            <h1>Wolkest</h1>
+          </div>
+          <i
+            @click="closeSidebar()"
+            class="pi pi-chevron-left"
+            id="sidebarIcon"
+            aria-hidden="true"
+          ></i>
+        </div>
+        <nav>
+          <div class="sidebar__menu">
+            <div class="sidebar__link active_menu_link">
+              <i class="pi pi-home"></i>
+              <a href="#">Home</a>
+            </div>
+            <h2>Pages</h2>
+            <div class="sidebar__link">
+              <i class="pi pi-bookmark" aria-hidden="true"></i>
+              <router-link to="/">Sample Page</router-link>
+            </div>
+            
+            <h2>Data</h2>
+            <div class="sidebar__link">
+              <i class="pi pi-database"></i>
+              <router-link to="/about">Sample Store</router-link>
+            </div>          
+          </div>          
+        </nav>
+      </menu>
+
       <nav class="navbar">
-        <div class="nav_icon" onclick="toggleSidebar()">
+        <div class="nav_icon" v-if="!sidebarIsOpen" @click="toggleSidebar()">
           <i class="pi pi-bars" aria-hidden="true"></i>
         </div>
         <div class="navbar__left">
@@ -29,50 +63,28 @@
           <router-view />  
         </div>
       </main>
-
-      <div id="sidebar">
-        <div class="sidebar__title">
-          <div class="sidebar__img">
-            <img src="./assets/logo.png" alt="logo" />
-            <h1>Wolkest</h1>
-          </div>
-          <i
-            onclick="closeSidebar()"
-            class="pi pi-chevron-left"
-            id="sidebarIcon"
-            aria-hidden="true"
-          ></i>
-        </div>
-        <nav>
-          <div class="sidebar__menu">
-            <div class="sidebar__link active_menu_link">
-              <i class="pi pi-home"></i>
-              <a href="#">Home</a>
-            </div>
-            <h2>Pages</h2>
-            <div class="sidebar__link">
-              <i class="pi pi-bookmark" aria-hidden="true"></i>
-              <router-link to="/">Sample Page</router-link>
-            </div>
-            
-            <h2>Data</h2>
-            <div class="sidebar__link">
-              <i class="pi pi-database"></i>
-              <router-link to="/about">Sample Store</router-link>
-            </div>          
-          </div>          
-        </nav>
-
-      </div>
     </div>
   </main>
 </template>
 
 <script>
 
-export default {
+export default {  
   name: 'App',
   components: {
+  },
+  data() {
+    return {
+      sidebarIsOpen: true
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarIsOpen = !this.sidebarIsOpen;
+    },
+    closeSidebar() {
+      this.sidebarIsOpen = false;      
+    }
   }
 }
 </script>
@@ -145,13 +157,17 @@ export default {
 .home-page-container {
   display: grid;
   height: 100vh;
-  grid-template-columns: 0.4fr 1fr 1fr 1fr;
+  grid-template-columns: 0 1fr 1fr 1fr;
   grid-template-rows: 0.2fr 3fr;
   grid-template-areas:
     "sidebar nav nav nav"
     "sidebar main main main";
-  /* grid-gap: 0.2rem; */
+} 
+
+.home-page-container.has_sidebar {
+  grid-template-columns: 0.5fr 1fr 1fr 1fr;
 }
+
 
 .navbar {
   background: #ffffff;
@@ -164,13 +180,10 @@ export default {
   border-bottom: 1px solid lightgray;
 }
 
-.nav_icon {
-  display: none;
-}
-
 .nav_icon > i {
+  cursor: pointer;
   font-size: 26px;
-  color: #a5aaad;
+  color: #020509;
 }
 
 .navbar__left > a {
@@ -248,6 +261,10 @@ main {
   /* color: #E85B6B; */
 }
 
+.sidebar__title > i {
+  cursor: pointer;
+}
+
 .sidebar__img {
   display: flex;
   align-items: center;
@@ -323,27 +340,20 @@ main {
   font-size: 18px;
 }
 
-.sidebar_responsive {
-  display: inline !important;
-  z-index: 9999 !important;
-  left: 0 !important;
-  position: absolute;
-}
-
 @media only screen and (max-width: 1940px) {
-  .home-page-container {
+  .home-page-container.has_sidebar{
     grid-template-columns: 0.6fr 1fr 1fr 1fr;
-  }  
+  } 
 }
 
 @media only screen and (max-width: 1640px) {
-  .home-page-container {
-    grid-template-columns: 0.8fr 1fr 1fr 1fr;
+  .home-page-container.has_sidebar{
+    grid-template-columns: 0.7fr 1fr 1fr 1fr;
   }  
 }
 
 @media only screen and (max-width: 978px) {
-  .home-page-container {
+  .home-page-container.has_sidebar{
     grid-template-columns: 1fr;
     /* grid-template-rows: 0.2fr 2.2fr; */
     grid-template-rows: 0.2fr 3fr;
@@ -365,20 +375,8 @@ main {
   }
 }
 
-@media only screen and (max-width: 855px) {
-  .main__cards {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-bottom: 0;
-  }
-
-  .charts {
-    grid-template-columns: 1fr;
-    margin-top: 30px;
-  }
-}
-
-@media only screen and (max-width: 480px) {
+/* Mobile & Tablet: viewport until 600px */
+@media only screen and (max-width: 600px) {
   .navbar__left {
     display: none;
   }
