@@ -1,4 +1,16 @@
-export default function loadPage() {
+function loadLayout() {
+    let layout = new Array();
+
+    layout.push({ id: 'container-1', span: 2 })
+
+    for (let i = 2; i < 8; i++)  {
+        layout.push({ id: `container-${i}`, span: 1 })
+    }
+
+    return layout;
+}
+
+function loadPage() {
     // components definitions list
     //#region Components Definition List ====
     let componentsDef = new Map();
@@ -97,3 +109,5 @@ export default function loadPage() {
 
     return componentsDef;
 }
+
+export default { loadPage, loadLayout }

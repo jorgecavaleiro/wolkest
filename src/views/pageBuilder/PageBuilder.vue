@@ -38,19 +38,7 @@
       <div class="support-grid"></div>
 
       <div class="band">
-        <div class="stack-container item-1" id="container-1">          
-        </div>
-        <div class="stack-container item-2" id="container-2">
-        </div>
-        <div class="stack-container item-3" id="container-3">
-        </div>
-        <div class="stack-container item-4" id="container-4">
-        </div>
-        <div class="stack-container item-5" id="container-5">
-        </div>
-        <div class="stack-container item-6" id="container-6">
-        </div>
-        <div class="stack-container item-7" id="container-7">
+        <div v-for="container in layout" :key="container.id" :class="'stack-container span-' + container.span" :id="container.id">          
         </div>
       </div>
     </div>
@@ -60,7 +48,7 @@
 <script setup>
   import { ref, getCurrentInstance } from "vue";
   import domUtils from "./dep/domUtils";
-  import pageLoad from "./dep/pageModelLoader";
+  import pageLoader from "./dep/pageModelLoader";
   import loadComponentByName from "./dep/componentLoader";
 
   // Prime Vue Components
@@ -71,6 +59,11 @@
   import Dialog from 'primevue/dialog';
 
   const { appContext } = getCurrentInstance()
+  // load the page layout
+  let layout = pageLoader.loadLayout()
+
+  console.log(layout)
+
 
   // eslint-disable-next-line no-unused-vars
   const addComponentToDOM = (component, props, contentWrapper) => {
@@ -250,7 +243,7 @@ export default {
   },  
   mounted() {
     // load the page model
-    const componentsDef = pageLoad()
+    const componentsDef = pageLoader.loadPage()
 
     // define the callback call
     const callback = (c) => {
@@ -303,11 +296,14 @@ button.sidebar-open {
   .band {
     grid-template-columns: 1fr 1fr;
   }  
-  .item-1 {
+  .span-2 {
   grid-column: 1/ span 2;
   }
-  .item-1 h1 {
-    font-size: 30px;
+  .span-3 {
+  grid-column: 1/ span 3;
+  }
+  .span-4 {
+  grid-column: 1/ span 4;
   }
 }
 
