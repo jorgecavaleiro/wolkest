@@ -7,7 +7,7 @@
           <Dropdown class="element" v-model="grabbedComponentType" :options="componentTypes" optionLabel="name" placeholder="Select a Component" />
         </div>
         <div class="queue-container">
-          <Dropdown class="element" v-model="dropTarget" :options="targets" optionLabel="name" placeholder="Select a Target" />          
+          <Dropdown class="element" v-model="dropTarget" :options="layout" optionLabel="id" placeholder="Select a Target" />          
           <PV-Button class="element" icon="pi pi-arrow-right" @click="onComponentDroped(dropTarget.id, grabbedComponentType.id, replaceContent)" />    
         </div>
         <div class="queue-container">
@@ -26,6 +26,9 @@
         <div>
           <Button class="element" label="Apply" @click="applyPropsToSelectedComponent()" icon="pi pi-check" iconPos="right" />
         </div>
+        <div>
+          <Button class="element" label="Add Container" @click="addContainer()" />
+        </div>        
       </div> 
     </Dialog>
 
@@ -100,13 +103,6 @@ export default {
       selectedComponentPropsKeys: [],
       visibleLeft: false,
       replaceContent: true,
-      targets: [
-        {name: 'Container 1', id: 'container-1'},
-        {name: 'Container 2', id: 'container-2'},
-        {name: 'Container 3', id: 'container-3'},
-        {name: 'Container 4', id: 'container-4'},
-        {name: 'Container 5', id: 'container-5'}
-        ],
       componentTypes: [
         {name: 'Card', id: 'CardComponent'},
         {name: 'Sample', id: 'SampleComponent'}
@@ -114,7 +110,14 @@ export default {
     };
   },
   methods: {
+    addContainer() {
+      const id = this.layout.length + 1
+      console.log(`adding container: container-${id}`)
+      this.layout.push({ id: `container-${id}`, span: 1 })
+    },
     onComponentDroped(targetContainerId, componentName, replaceContent) {
+      console.log(targetContainerId)
+
       // define the callback call
       const callback = (c) => {
           this.setContentWrapperEvents(c)
