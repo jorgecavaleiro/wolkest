@@ -1,8 +1,9 @@
 <template>
   <div class="home">
-    <div class="box" ref="container">
+    <!-- <div class="box" ref="container">
       <h2>About...</h2>
-    </div>
+    </div> -->
+    <LayoutBuilderVue></LayoutBuilderVue>
   </div>
 </template>
 

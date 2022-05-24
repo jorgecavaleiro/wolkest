@@ -1,22 +1,8 @@
 <template>
   <div class="home">
-    <div class="flex-container">
-      <div class="fex-child">
-        <select v-model="containerId">
-          <option disabled value="">Select target</option>
-          <option value="container-2">2</option>
-          <option value="container-3">3</option>
-          <option value="container-4">4</option>
-        </select>
-      </div>
-      <div class="fex-child">
-        <button @click="insert(containerId)">Insert component on {{ containerId }}</button>
-      </div>
+    <div class="box" ref="container">
+      <h2>Home Page</h2>
     </div>
-    <div class="box" ref="container"></div>
-    <div class="box" id="container-2"></div>
-    <div class="box" id="container-3"></div>
-    <div class="box" id="container-4"></div>
   </div>
 </template>
 
@@ -25,39 +11,9 @@ export default {
   name: "Home-Component",
   data() {
     return {
-      containerId: "",
+      title: "Home",
     };
   },
-};
-</script>
-
-<script setup>
-import { ref, onUnmounted, getCurrentInstance } from "vue";
-import renderComponent from "@/renderComponent";
-
-const { appContext } = getCurrentInstance();
-
-var container = ref();
-let counter = 1;
-let destroyComp = null;
-
-onUnmounted(() => destroyComp?.());
-
-const insert = async (id) => {
-    console.log(id)
-    // if (id) {
-    //     container.value = document.getElementById(id)
-    // }
-    destroyComp?.();
-    destroyComp = renderComponent({
-        el: container.value,
-        component: (await import("@/components/SampleComponent.vue")).default,
-        props: {
-            key: counter,
-            msg: "Message " + counter++,
-        },
-        appContext,
-    });
 };
 </script>
 
