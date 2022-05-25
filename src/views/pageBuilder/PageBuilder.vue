@@ -37,14 +37,16 @@
 <!-- 
     <PV-Button class="sidebar-open" icon="pi pi-arrow-right" @click="visibleLeft = true" />     -->
 
-    <div id="canvas" ref="root">
-      <div class="support-grid"></div>
-
-      <div class="band">
-        <div v-for="container in layout" :key="container.id" :class="'stack-container span-' + container.span" :id="container.id">          
+    <LayoutDesigner>
+      <div id="canvas" ref="root">
+        <div class="support-grid"></div>
+        <div class="band">
+          <div v-for="container in layout" :key="container.id" :class="'stack-container span-' + container.span" :id="container.id">          
+          </div>
         </div>
       </div>
-    </div>
+    </LayoutDesigner>
+
   </div>
 </template>
 
@@ -60,6 +62,7 @@
   import InputText from 'primevue/inputtext';
   import Button from 'primevue/button';
   import Dialog from 'primevue/dialog';
+  import LayoutDesigner from '@/components/LayoutDesigner'
 
   const { appContext } = getCurrentInstance()
   // load the page layout
@@ -88,7 +91,7 @@ export default {
   name: "VC-PageBuilder",
   data() {
     return {
-      displayTools: true,
+      displayTools: false,
       components: new Map(),
       containerId: "",
       props: null,
@@ -266,11 +269,13 @@ export default {
 </script>
 
 <style scoped>
-html {
+#canvas {
   background: #f5f7f8;
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   padding: 20px 0;
+  margin: 1rem;
+  height: 100vh;
 }
 
 button.sidebar-open {

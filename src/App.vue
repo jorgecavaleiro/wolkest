@@ -227,7 +227,8 @@ main {
 }
 
 .main__container {
-  padding: 20px 35px;
+  padding: 0;
+  /* padding: 20px 35px; */
 }
 
 .main__title {
