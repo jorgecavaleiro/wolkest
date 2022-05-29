@@ -1,5 +1,5 @@
 <template lang="">
-    <div :id="id" ref="root">      
+    <div class="wrapper" :id="id" ref="root">      
         <h2 ref="test">Component:</h2>
         {{componentName}}  
     </div>

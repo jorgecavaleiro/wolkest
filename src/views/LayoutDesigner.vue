@@ -28,8 +28,8 @@
                            <div id="canvas" ref="root">
                               <div class="support-grid"></div>
                               <div class="band">
-                                 <div v-for="container in layout" :key="container.id" :class="'stack-container span-' + container.span" :id="container.id">          
-                                    <ComponentWrapper v-for="(c, index) in container.components" 
+                                 <div v-for="container in layout" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
+                                    <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
                                        :key="container.id + '-' + index" 
                                        :id="container.id + '-' + index" 
                                        :componentName="c.componentName"
@@ -4078,6 +4078,10 @@ h1 {
 }         
 
 /* Containers */
+
+.container > .wrapper:only-child {
+  height: 100%;
+}
 
 .stack-container {
    min-height: 100%;
