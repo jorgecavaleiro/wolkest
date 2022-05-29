@@ -2,7 +2,7 @@
   <div class="container">
     <h1>{{ msg }}</h1>
 
-    <PV-Button @click="count++">count is: {{ count }}</PV-Button>
+    <Button @click="count++">count is: {{ count }}</Button>
     <p>
       Edit
       <code>components/SampleComponent.vue</code> to test hot module replacement.
@@ -14,9 +14,13 @@
 
 <script>
 import { ref, defineComponent, onUnmounted } from 'vue'
+import Button from 'primevue/button';
 
 export default defineComponent({
   name: 'SampleComponent',
+  components: {
+    Button
+  },
   props: {
     msg: {
       type: String,

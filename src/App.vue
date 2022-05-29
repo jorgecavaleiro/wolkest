@@ -23,7 +23,12 @@
             <h2>Pages</h2>
             <div class="sidebar__link">
               <i class="pi pi-bookmark" aria-hidden="true"></i>
-              <router-link to="/">Sample Page</router-link>
+              <router-link to="/">Sample Page</router-link>          
+            </div>
+
+            <div class="sidebar__link">
+              <i class="pi pi-bookmark" aria-hidden="true"></i>
+              <router-link to="/designer">Designer</router-link>              
             </div>
             
             <h2>Data</h2>

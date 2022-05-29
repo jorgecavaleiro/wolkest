@@ -21,21 +21,35 @@
                      <div class="gjs-frame-wrapper__left" data-frame-left=""></div>
                      <div class="gjs-frame-wrapper__bottom" data-frame-bottom=""></div>
 
-                     <div class="gjs-frame">
-                         
-                         <!-- CANVAS GOES HERE -->
-                         <slot></slot>                            
+                     <!--#region : CANVAS ---------------------------------------->
 
+                     <div class="gjs-frame" style="display:flex">                         
+                         <RenderToIFrame :css="css" style="width:100%; border:none;">
+                           <div id="canvas" ref="root">
+                              <div class="support-grid"></div>
+                              <div class="band">
+                                 <div v-for="container in layout" :key="container.id" :class="'stack-container span-' + container.span" :id="container.id">          
+                                    <ComponentWrapper v-for="(c, index) in container.components" 
+                                       :key="container.id + '-' + index" 
+                                       :id="container.id + '-' + index" 
+                                       :componentName="c.componentName"
+                                       :appContext="appContext"
+                                       :componentProps="c.props"></ComponentWrapper>
+                                 </div>
+                              </div>
+                           </div>
+                         </RenderToIFrame>  
                      </div>
 
 
                      <!-- <iframe allowfullscreen="allowfullscreen" data-frame-el="true" class="gjs-frame">
 
-                         <h1>Inside</h1>
-
                          <slot></slot>                            
 
                      </iframe> -->
+
+                     <!--#endregion : CANVAS --------------------------------------->
+
                   </div>
                </div>
             </div>
@@ -3879,14 +3893,123 @@
    </div>
 </div>
 </template>
+
 <script>
-export default {};
+import { ref, getCurrentInstance } from "vue";
+import layoutLoader from "./pageBuilder/dep/layoutLoader";
+import RenderToIFrame from "../components/RenderToIFrame";
+import ComponentWrapper from '../components/ComponentWrapper'
+
+export default {
+  name: "LayoutDesigner",
+  components: {
+    RenderToIFrame,
+    ComponentWrapper
+  },
+  setup() {
+     // load the page layout
+     let layout = layoutLoader.loadLayout()
+
+     const { appContext } = getCurrentInstance()
+
+     const css = ref(
+        `body {
+           background-color: rgba(0,0,0,.1);
+         }
+         h1 {
+            color: salmon;
+         }
+
+         ::-webkit-scrollbar {
+            width: 8px;
+            height: 6px;
+            background-color: #646464;
+         }         
+
+         #canvas {
+            background: #f5f7f8;
+            font-family: 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            padding: 20px 0;
+            margin: 1rem;
+            height: 100vh;
+         }    
+         
+         .band {
+            width: 90%;
+            max-width: 1240px;
+            margin: 0 auto;
+            
+            display: grid;
+            
+            /*region Mobile: viewport w/ less than 500px */
+            grid-template-columns: 1fr;
+            
+            grid-template-rows: auto;
+            grid-gap: 20px;         
+         }         
+
+
+         /* Tablet: viewport from 500px to 849px */
+         @media only screen and (min-width: 500px) {
+            .band {
+               grid-template-columns: 1fr 1fr;
+            }  
+            .span-2 {
+               grid-column: 1/ span 2;
+            }
+            .span-3 {
+               grid-column: 1/ span 3;
+            }
+            .span-4 {
+               grid-column: 1/ span 4;
+            }
+         }
+
+         /* Desktop: viewport from 850px */
+         @media only screen and (min-width: 850px) {
+            .band {
+               grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+         }         
+
+         /* Containers */
+
+         .stack-container {
+            min-height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            
+            position: relative;
+            top: 0;
+         }
+
+         .queue-container {
+            display: flex;
+            flex-direction: row;
+         }
+
+         /* Elements */
+
+         .element {
+            margin: 1rem 1rem 0 0;
+            width: 100%;
+         }
+
+         .f-height {
+            height: 100%;
+         }
+         `
+      );
+     return {
+      layout,
+      css,
+      appContext
+      };
+  },
+};
 </script>
-
-<style lang="">
-
-</style>
-
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped src="grapesjs/dist/css/grapes.min.css">
