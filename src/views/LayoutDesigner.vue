@@ -111,21 +111,49 @@
                </div>
             </div>
          </div>
+
+         <!--------------------------------------------->
+         <!-- ACTIONS                                 -->
+         <!--------------------------------------------->
+
          <div class="gjs-pn-panels">
+
+            <!-- Panel for element properties -->
             <div class="gjs-pn-panel gjs-pn-commands gjs-one-bg gjs-two-color">
                <div class="gjs-pn-buttons"><span class="gjs-pn-btn"></span></div>
             </div>
+
+            <!-- Visualization & Edit Options -->
             <div class="gjs-pn-panel gjs-pn-options gjs-one-bg gjs-two-color">
-               <div class="gjs-pn-buttons"><span title="View components" class="gjs-pn-btn fa fa-square-o"></span><span title="Preview" class="gjs-pn-btn fa fa-eye"></span><span title="Fullscreen" class="gjs-pn-btn fa fa-arrows-alt"></span><span title="View code" class="gjs-pn-btn fa fa-code"></span><span class="gjs-pn-btn fa fa-undo"></span><span class="gjs-pn-btn fa fa-repeat"></span><span class="gjs-pn-btn fa fa-download"></span><span class="gjs-pn-btn fa fa-trash"></span></div>
+               <div class="gjs-pn-buttons">
+                  <span title="View components" class="gjs-pn-btn fa fa-square-o"></span>
+                  <span title="Preview" class="gjs-pn-btn fa fa-eye"></span>
+                  <span title="Fullscreen" class="gjs-pn-btn fa fa-arrows-alt"></span>
+                  <span title="View code" class="gjs-pn-btn fa fa-code"></span>
+                  <span class="gjs-pn-btn fa fa-undo"></span>
+                  <span class="gjs-pn-btn fa fa-repeat"></span>
+                  <span class="gjs-pn-btn fa fa-download"></span>
+                  <span class="gjs-pn-btn fa fa-trash"></span></div>
             </div>
+
+            <!-- Visualization & Edit Options -->
             <div class="gjs-pn-panel gjs-pn-views gjs-one-bg gjs-two-color">
-               <div class="gjs-pn-buttons"><span title="Open Style Manager" class="gjs-pn-btn fa fa-paint-brush"></span><span title="Settings" class="gjs-pn-btn fa fa-cog"></span><span title="Open Layer Manager" class="gjs-pn-btn fa fa-bars"></span><span title="Open Blocks" class="gjs-pn-btn fa fa-th-large gjs-pn-active gjs-four-color"></span></div>
+               <div class="gjs-pn-buttons">
+                  <span title="Open Style Manager" class="gjs-pn-btn fa fa-paint-brush"></span>
+                  <span title="Settings" class="gjs-pn-btn fa fa-cog"></span>
+                  <span title="Open Layer Manager" class="gjs-pn-btn fa fa-bars"></span>
+                  <span title="Open Blocks" class="gjs-pn-btn fa fa-th-large gjs-pn-active gjs-four-color"></span>
+               </div>
             </div>
+
             <div class="gjs-pn-panel gjs-pn-devices-c gjs-one-bg gjs-two-color">
                <div class="gjs-pn-buttons"><span class="gjs-pn-btn fa fa-desktop"></span><span class="gjs-pn-btn fa fa-tablet"></span><span class="gjs-pn-btn fa fa-mobile"></span></div>
             </div>
             <div class="gjs-pn-panel gjs-pn-views-container gjs-one-bg gjs-two-color">
                <div>
+
+                  <!-- Panel for element properties -->
+                  
                   <div style="display: none;">
                      <div class="gjs-clm-tags gjs-one-bg gjs-two-color">
                         <div id="gjs-clm-up" class="gjs-clm-header">
