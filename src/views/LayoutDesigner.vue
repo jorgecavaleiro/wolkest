@@ -177,15 +177,15 @@
 
                <!-- Panel for Components palette -->
 
-               <div  v-if="selectedPanel==='Components'">
+               <div v-if="selectedPanel==='Components'">
                   <div class="gjs-blocks-cs gjs-one-bg gjs-two-color">
                      <div class="gjs-block-categories">
-                        <div class="gjs-block-category gjs-open">
+                        <div class="gjs-block-category" :class="{ 'gjs-open': componentsGroups[0].isOpen }" @click="componentsGroupToggle(0)">
                            <div class="gjs-title">
-                              <i class="gjs-caret-icon fa fa-caret-down"></i>
-                              Basic
+                              <i class="gjs-caret-icon fa" :class="{ 'fa-caret-down': componentsGroups[0].isOpen, 'fa-caret-right': !componentsGroups[0].isOpen }" ></i>
+                              {{componentsGroups[0].title}}
                            </div>
-                           <div class="gjs-blocks-c">
+                           <div v-if="componentsGroups[0].isOpen" class="gjs-blocks-c">
                               <div class="gjs-fonts gjs-f-b1 gjs-block gjs-one-bg gjs-four-color-h" title="1 Column" draggable="true">
                                  <div class="gjs-block-label">1 Column</div>
                               </div>
@@ -344,29 +344,42 @@ import RenderToIFrame from "../components/RenderToIFrame";
 import ComponentWrapper from "../components/ComponentWrapper";
 
 export default {
-  name: "LayoutDesigner",
-  components: {
-    RenderToIFrame,
-    ComponentWrapper,
-  },
-  data() {
-    return {
-      selectedPanel: "Components",
-    };
-  },
-  methods: {
-    selectPanel(name) {
-      console.log(`Selected Panel: ${name}`);
-      this.selectedPanel = name;
-    },
-  },
-  setup() {
-    // load the page layout
-    let layout = layoutLoader.loadLayout();
-    const { appContext } = getCurrentInstance();
-    const css = ref(
-      `body {
-           background-color: rgba(0,0,0,.1);
+   name: "LayoutDesigner",
+   components: {
+      RenderToIFrame,
+      ComponentWrapper,
+   },
+   data() {
+      return {
+         selectedPanel: "Components",
+         componentsGroups: this.cGroups,
+      };
+   },
+   methods: {
+      selectPanel(name) {
+         console.log(`Selected Panel: ${name}`);
+         this.selectedPanel = name;
+      },
+      componentsGroupToggle(index) {
+         this.componentsGroups[index].isOpen = !this.componentsGroups[index].isOpen
+
+         console.log(`Components Group: ${index}, changed to: ${this.componentsGroups[index].isOpen}`)
+         console.log(this.componentsGroups)
+      }
+   },
+   setup() {
+      // load the page layout
+      let layout = layoutLoader.loadLayout()
+
+      let cGroups = new Array()
+
+      // Available Components
+      cGroups.push({ title: 'Basic', isOpen: true })
+
+      const { appContext } = getCurrentInstance();
+      const css = ref(
+         `body {
+         background-color: rgba(0,0,0,.1);
          }
          h1 {
             color: salmon;
@@ -386,7 +399,7 @@ export default {
             margin: 1rem;
             height: 100vh;
          }    
-         
+
          .band {
             width: 90%;
             max-width: 1240px;
@@ -453,14 +466,14 @@ export default {
             height: 100%;
          }
          `
-    );
-
-    return {
-      layout,
-      css,
-      appContext,
-    };
-  },
+      );
+      return {
+         layout,
+         css,
+         appContext,
+         cGroups
+      };
+   },
 };
 </script>
 
