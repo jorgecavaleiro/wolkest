@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="wrapper" :id="id" ref="root">      
+    <div class="wrapper" :id="id" ref="root" :class="{ selected: isSelected }">      
         <h2 ref="test">Component:</h2>
         {{componentName}}  
     </div>
@@ -26,10 +26,19 @@ export default {
         componentProps: {
             type: Object,
             default: null
+        }, 
+        isSelected: {
+            type: Boolean,
+            default: false
+        }
+    },
+    data: function() {
+        return {
+            component: Object
         }
     },
     methods: {
-        addComponentToDOM: (component, props, contentWrapper, appContext) => {
+        addComponentToDOM: function(component, props, contentWrapper, appContext) {
 
             // render component into the DOM
             const newCmp = domUtils.renderComponent({
@@ -39,7 +48,7 @@ export default {
                 appContext,
             });
             return newCmp
-        }      
+        }  
     },
     mounted() {
         // Dynamically load the component
@@ -48,13 +57,13 @@ export default {
 
         let promise = loadComponentByName(this.componentName)
         promise.then(c => { 
+            this.component = c
             this.addComponentToDOM(c, this.componentProps, root, this.appContext);
         })          
     },
     setup(props) {
-
         onMounted(() => {
-      
+           //console.log(props)
         })        
 
         return { name:props.componentName, props: props.componentProps }
@@ -63,5 +72,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .selected {
+        border: solid 1px blue;
+    }
 </style>

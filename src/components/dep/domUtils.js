@@ -4,14 +4,14 @@ function renderComponent({ el, component, props, appContext }) {
   // initialize and get the reactive props to allow changes
   const rprops = getReactiveProps(component, props)
 
-  console.log('Adding the component:')
-  console.log(component)
-  console.log('with props: ')
-  console.log(props)  
-  console.log('into: ')
-  console.log(el)
-  console.log('with context:')
-  console.log(appContext)
+  // console.log('Adding the component:')
+  // console.log(component)
+  // console.log('with props: ')
+  // console.log(props)  
+  // console.log('into: ')
+  // console.log(el)
+  // console.log('with context:')
+  // console.log(appContext)
   
   let app = createApp(component, rprops)
   Object.assign(app._context, appContext) // must use Object.assign here

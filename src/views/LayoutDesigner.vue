@@ -30,8 +30,11 @@
                               <div class="band">
                                  <div v-for="container in layout" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
                                     <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
+                                       :ref="container.id + '-' + index"
                                        :key="container.id + '-' + index" 
                                        :id="container.id + '-' + index" 
+                                       @click="changeSelectedWrapperTo($event, container.id + '-' + index)"
+                                       :isSelected = "selectedWrapperId == container.id + '-' + index"
                                        :componentName="c.componentName"
                                        :appContext="appContext"
                                        :componentProps="c.props"></ComponentWrapper>
@@ -217,6 +220,8 @@ export default {
    data() {
       return {
          selectedPanel: "Components",
+         selectedWrapperId: "",
+         isInPreviewMode: false,
          componentsGroups: this.componentsPaletteGroups,
       };
    },
@@ -230,6 +235,15 @@ export default {
 
          console.log(`Components Group: ${index}, changed to: ${this.componentsGroups[index].isOpen}`)
          console.log(this.componentsGroups)
+      },
+      changeSelectedWrapperTo(e, wrapperId) {
+         if (this.isInPreviewMode)
+            return
+
+         e.preventDefault()
+         this.selectedWrapperId = wrapperId
+         var child = this.$refs[wrapperId][0]
+         console.log(`The wrapper: ${wrapperId} selected value is: ${child.isSelected}`)         
       }
    },
    setup() {
