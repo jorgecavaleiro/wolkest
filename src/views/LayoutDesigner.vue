@@ -186,20 +186,13 @@
                               {{componentsGroups[index].title}}
                            </div>
                            <div v-if="componentsGroups[index].isOpen" class="gjs-blocks-c">
-                              <div v-for="comp in componentsGroups[index].components" :key="comp.id" :class="comp.classes" class="gjs-block gjs-one-bg gjs-four-color-h" title="1 Column" draggable="true">
+                              <div v-for="comp in componentsGroups[index].components" :key="comp.id" :class="comp.classes" class="component-palette-icon gjs-block gjs-one-bg gjs-four-color-h" title="1 Column" draggable="true">
                                  <span v-html="comp.innerHtml"></span>
                                  <div class="gjs-block-label">{{comp.title}}</div>
                               </div>                              
                            </div>
                         </div>
                      </div>   
-                     <div class="gjs-blocks-no-cat">
-                        <div class="gjs-blocks-c">
-                           <div class="gjs-block gjs-one-bg gjs-four-color-h" title="Auto Complete" draggable="true">
-                              <div class="gjs-block-label">Auto Complete</div>
-                           </div>
-                        </div>
-                     </div>
                   </div>
                </div>
             </div>
@@ -255,11 +248,11 @@ export default {
             { id:'ContainerThreeColumns', title: '3 Columns', classes: 'gjs-fonts gjs-f-b3' },
             { id:'ContainerTwoColumn3-7', title: '2 Columns 3/7', classes: 'gjs-fonts gjs-f-b37' },
             { id:'Text', title: 'Text', classes: 'gjs-fonts gjs-f-text' },
-            { id:'Link', title: 'Link', classes: 'fa fa-link' },
-            { id:'Image', title: 'Image', classes: 'gjs-fonts gjs-f-image' },
-            { id:'Video', title: 'Video', classes: 'fa fa-youtube-play' },
-            { id:'Map', title: 'Map', classes: 'fa fa-map-o' },
-            { id:'LinkBlock', title: 'Link Block', classes: 'fa fa-link' },
+            { id:'Link', title: 'Link', classes: 'pi pi-link' },
+            { id:'Image', title: 'Image', classes: 'pi pi-image' },
+            { id:'Video', title: 'Video', classes: 'pi pi-youtube' },
+            { id:'Map', title: 'Map', classes: 'pi pi-map' },
+            { id:'LinkBlock', title: 'Link Block', classes: 'pi pi-link' },
             { id:'Quote', title: 'Quote', classes: 'fa fa-quote-right' },
             { id:'TextSection', title: 'Text section', classes: 'gjs-fonts gjs-f-h1p' },
          ]
@@ -414,6 +407,14 @@ h1 {
 
   grid-template-rows: auto;
   grid-gap: 20px;
+}
+
+/* Components Palette */
+
+.pi.component-palette-icon {
+   font-size: 2em;
+   line-height: 2em;
+   padding: 11px;
 }
 
 /* Tablet: viewport from 500px to 849px */
