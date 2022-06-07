@@ -159,14 +159,14 @@
                   <div v-if="selectedPanel==='Settings'">
                      <div class="gjs-traits-label">Component settings</div>
                      <div class="gjs-trt-traits gjs-one-bg gjs-two-color">
-                        <div class="gjs-trt-trait__wrp gjs-trt-trait__wrp-id">
-                           <div class="gjs-trt-trait gjs-trt-trait--text">
+                        <div v-if="selectedComponent" class="gjs-trt-trait__wrp gjs-trt-trait__wrp-id">
+                           <div v-for="([key, value], index) in Object.entries(selectedComponent.componentProps)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
                               <div class="gjs-label-wrp" data-label="">
-                                 <div class="gjs-label" title="ID">ID</div>
+                                 <div class="gjs-label" title="ID">{{key}}</div>
                               </div>
                               <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                  <div class="gjs-field gjs-field-text" data-input="">
-                                    <input type="text" placeholder="eg. Text here">
+                                    <input type="text" placeholder="eg. Text here" :value="[value]">
                                  </div>
                               </div>
                            </div>
@@ -221,8 +221,9 @@ export default {
       return {
          selectedPanel: "Components",
          selectedWrapperId: "",
+         selectedComponent: null,
          isInPreviewMode: false,
-         componentsGroups: this.componentsPaletteGroups,
+         componentsGroups: this.componentsPaletteGroups,         
       };
    },
    methods: {
@@ -243,7 +244,9 @@ export default {
          e.preventDefault()
          this.selectedWrapperId = wrapperId
          var child = this.$refs[wrapperId][0]
-         console.log(`The wrapper: ${wrapperId} selected value is: ${child.isSelected}`)         
+         this.selectedComponent = child
+         console.log(`The wrapper: ${wrapperId} props are:`)         
+         console.log(child.componentProps)
       }
    },
    setup() {
