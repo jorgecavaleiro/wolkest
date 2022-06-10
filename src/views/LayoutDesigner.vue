@@ -30,11 +30,11 @@
                               <div class="band">
                                  <div v-for="container in layout" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
                                     <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
-                                       :ref="container.id + '-' + index"
-                                       :key="container.id + '-' + index" 
-                                       :id="container.id + '-' + index" 
-                                       @click="changeSelectedWrapperTo($event, container.id + '-' + index)"
-                                       :isSelected = "selectedWrapperId == container.id + '-' + index"
+                                       :ref="container.id + '$' + index"
+                                       :key="container.id + '$' + index" 
+                                       :id="container.id + '$' + index" 
+                                       @click="changeSelectedWrapperTo($event, container.id + '$' + index)"
+                                       :isSelected = "selectedWrapperId == container.id + '$' + index"
                                        :componentName="c.componentName"
                                        :appContext="appContext"
                                        :componentProps="c.props"></ComponentWrapper>
@@ -159,14 +159,14 @@
                   <div v-if="selectedPanel==='Settings'">
                      <div class="gjs-traits-label">Component settings</div>
                      <div class="gjs-trt-traits gjs-one-bg gjs-two-color">
-                        <div v-if="selectedComponent" class="gjs-trt-trait__wrp gjs-trt-trait__wrp-id">
-                           <div v-for="([key, value], index) in Object.entries(selectedComponent.componentProps)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
+                        <div v-if="selectedWrapper" class="gjs-trt-trait__wrp gjs-trt-trait__wrp-id">
+                           <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
                               <div class="gjs-label-wrp" data-label="">
                                  <div class="gjs-label" title="ID">{{key}}</div>
                               </div>
                               <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                  <div class="gjs-field gjs-field-text" data-input="">
-                                    <input type="text" placeholder="eg. Text here" :value="[value]">
+                                    <input type="text" placeholder="eg. Text here" @change="propertyValueChanged(key)" v-model="selectedWrapper.getRenderedComponent.props[key]">                                    
                                  </div>
                               </div>
                            </div>
@@ -206,7 +206,7 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, nextTick } from "vue";
 import layoutLoader from "./pageBuilder/dep/layoutLoader";
 import RenderToIFrame from "../components/RenderToIFrame";
 import ComponentWrapper from "../components/ComponentWrapper";
@@ -221,15 +221,51 @@ export default {
       return {
          selectedPanel: "Components",
          selectedWrapperId: "",
-         selectedComponent: null,
+         selectedWrapper: null,
          isInPreviewMode: false,
-         componentsGroups: this.componentsPaletteGroups,         
+         componentsGroups: this.componentsPaletteGroups,  
+         changes: 0       
       };
    },
    methods: {
       selectPanel(name) {
          console.log(`Selected Panel: ${name}`);
          this.selectedPanel = name;
+      },
+      async propertyValueChanged(propertyName) {
+         console.log(propertyName)
+
+         this.changes++
+
+         const currentLayout = {...this.layout}
+
+         console.log(this.layout)
+
+         //TODO: Must call created components destroy!!
+
+         this.layout = []
+
+         this.$forceUpdate()
+
+         await nextTick()
+
+         this.layout = {...currentLayout}
+
+         this.$forceUpdate()
+
+         // const segments = this.selectedWrapper.id.split('$')
+         // const containerId = segments[0]
+         // const componentIndex = Number(segments[1])
+
+         // const container = this.layout.find(element => element.id === containerId);
+         // if(container) {
+         //    const comp = container.components[componentIndex]
+         //    if (comp) {
+         //       comp.key += '.'
+         //       comp.props = this.selectedWrapper.getRenderedComponent.props
+         //       console.log(comp.props)
+         //    }
+         // }
       },
       componentsGroupToggle(index) {
          this.componentsGroups[index].isOpen = !this.componentsGroups[index].isOpen
@@ -244,9 +280,9 @@ export default {
          e.preventDefault()
          this.selectedWrapperId = wrapperId
          var child = this.$refs[wrapperId][0]
-         this.selectedComponent = child
+         this.selectedWrapper = child
          console.log(`The wrapper: ${wrapperId} props are:`)         
-         console.log(child.componentProps)
+         console.log(child.getRenderedComponent.props)
       }
    },
    setup() {

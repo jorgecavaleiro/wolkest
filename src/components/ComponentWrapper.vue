@@ -26,10 +26,15 @@ export default {
         componentProps: {
             type: Object,
             default: null
-        }, 
+        },         
         isSelected: {
             type: Boolean,
             default: false
+        }
+    },
+    computed: {
+        getRenderedComponent(){
+            return this.component
         }
     },
     data: function() {
@@ -57,8 +62,7 @@ export default {
 
         let promise = loadComponentByName(this.componentName)
         promise.then(c => { 
-            this.component = c
-            this.addComponentToDOM(c, this.componentProps, root, this.appContext);
+            this.component = this.addComponentToDOM(c, this.componentProps, root, this.appContext);
         })          
     },
     setup(props) {
