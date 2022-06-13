@@ -28,7 +28,7 @@
                            <div id="canvas" ref="root">
                               <div class="support-grid"></div>
                               <div class="band">
-                                 <div v-for="container in layout" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
+                                 <div v-for="container in layout" :ref="container.id" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
                                     <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
                                        :ref="container.id + '$' + index"
                                        :key="container.id + '$' + index" 
@@ -252,20 +252,6 @@ export default {
          this.layout = {...currentLayout}
 
          this.$forceUpdate()
-
-         // const segments = this.selectedWrapper.id.split('$')
-         // const containerId = segments[0]
-         // const componentIndex = Number(segments[1])
-
-         // const container = this.layout.find(element => element.id === containerId);
-         // if(container) {
-         //    const comp = container.components[componentIndex]
-         //    if (comp) {
-         //       comp.key += '.'
-         //       comp.props = this.selectedWrapper.getRenderedComponent.props
-         //       console.log(comp.props)
-         //    }
-         // }
       },
       componentsGroupToggle(index) {
          this.componentsGroups[index].isOpen = !this.componentsGroups[index].isOpen
@@ -279,10 +265,18 @@ export default {
 
          e.preventDefault()
          this.selectedWrapperId = wrapperId
-         var child = this.$refs[wrapperId][0]
-         this.selectedWrapper = child
-         console.log(`The wrapper: ${wrapperId} props are:`)         
-         console.log(child.getRenderedComponent.props)
+         var wrapper = this.$refs[wrapperId][0]
+         this.selectedWrapper = wrapper
+         //console.log(`The wrapper: ${wrapperId} props are:`)         
+         //console.log(wrapper.getRenderedComponent.props)
+
+         // Get the container
+         const parts = wrapperId.split('$')
+         const containerId = parts[0]
+         console.log(`Current container is: ${containerId}`)
+         var cont = this.layout.find(c => c.id === containerId)
+         console.log(cont)
+         cont.span = 4
       }
    },
    setup() {
@@ -443,9 +437,11 @@ h1 {
   background: #f5f7f8;
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
+  width: 100%;
   padding: 20px 0;
   margin: 1rem;
-  height: 100vh;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
 }
 
 .band {
