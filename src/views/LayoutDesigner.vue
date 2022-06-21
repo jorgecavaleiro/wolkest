@@ -28,7 +28,10 @@
                            <div id="canvas" ref="root">
                               <div class="support-grid"></div>
                               <div class="band">
-                                 <div v-for="container in layout" :ref="container.id" :key="container.id" :class="'container stack-container span-' + container.span" :id="container.id">          
+                                 <div v-for="container in layout" 
+                                    :ref="container.id" :key="container.id" 
+                                    :class="'container stack-container span-' + container.span" 
+                                    :id="container.id">          
                                     <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
                                        :ref="container.id + '$' + index"
                                        :key="container.id + '$' + index" 
@@ -157,21 +160,55 @@
                   <!-- Panel for selected Component Settings -->   
 
                   <div v-if="selectedPanel==='Settings'">
-                     <div class="gjs-traits-label">Component settings</div>
-                     <div class="gjs-trt-traits gjs-one-bg gjs-two-color">
-                        <div v-if="selectedWrapper" class="gjs-trt-trait__wrp gjs-trt-trait__wrp-id">
-                           <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
-                              <div class="gjs-label-wrp" data-label="">
-                                 <div class="gjs-label" title="ID">{{key}}</div>
+
+                     <div class="gjs-blocks-cs gjs-one-bg gjs-two-color">
+                        <div class="gjs-block-categories">
+
+                           <!-- The selected component properties -->
+                           <div class="gjs-block-category" :class="{ 'gjs-open': componentPropertiesIsOpen }">
+                              <div class="gjs-title" @click="componentPropertiesIsOpen = !componentPropertiesIsOpen">
+                                 <i class="gjs-caret-icon fa" :class="{ 'fa-caret-down': componentPropertiesIsOpen, 'fa-caret-right': !componentPropertiesIsOpen }" ></i>
+                                 Component Properties
                               </div>
-                              <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
-                                 <div class="gjs-field gjs-field-text" data-input="">
-                                    <input type="text" placeholder="eg. Text here" @change="propertyValueChanged(key)" v-model="selectedWrapper.getRenderedComponent.props[key]">                                    
-                                 </div>
+                              <div v-if="componentPropertiesIsOpen" class="gjs-blocks-c">
+                                 <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
+                                    <div class="gjs-label-wrp" data-label="">
+                                       <div class="gjs-label" :title="key">{{key}}</div>
+                                    </div>
+                                    <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
+                                       <div class="gjs-field gjs-field-text" data-input="">
+                                          <input type="text" placeholder="eg. Text here" @change="propertyValueChanged(key)" v-model="selectedWrapper.getRenderedComponent.props[key]">                                    
+                                       </div>
+                                    </div>
+                                 </div>                            
                               </div>
                            </div>
-                        </div>
-                     </div>
+
+                           <!-- The selected container properties -->
+                           <div class="gjs-block-category" :class="{ 'gjs-open': containerPropertiesIsOpen }">
+                              <div class="gjs-title" @click="containerPropertiesIsOpen = !containerPropertiesIsOpen">
+                                 <i class="gjs-caret-icon fa" :class="{ 'fa-caret-down': containerPropertiesIsOpen, 'fa-caret-right': !containerPropertiesIsOpen }" ></i>
+                                 Container Properties
+                              </div>
+                              <div v-if="containerPropertiesIsOpen" class="gjs-blocks-c">
+                                 <div class="gjs-trt-trait gjs-trt-trait--text">
+                                    <div class="gjs-label-wrp" data-label="">
+                                       <div class="gjs-label" title="span">span</div>
+                                    </div>
+                                    <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
+                                       <div class="gjs-field gjs-field-text" data-input="">
+                                          <input type="text" placeholder="eg. Text here" v-model="selectedContainer.span">                                    
+                                       </div>
+                                    </div>
+                                 </div>                            
+                              </div>
+                           </div>
+
+                        </div>   
+                     </div>                  
+                
+
+                     <!-- No selection -->
                      <div style="display: none;">
                         <div class="gjs-trt-header">Select an element before using Trait Manager</div>
                      </div>
@@ -221,7 +258,10 @@ export default {
       return {
          selectedPanel: "Components",
          selectedWrapperId: "",
-         selectedWrapper: null,
+         selectedWrapper: null, // each container may have N component wrappers 
+         selectedContainer: null,
+         componentPropertiesIsOpen: true,
+         containerPropertiesIsOpen: true,
          isInPreviewMode: false,
          componentsGroups: this.componentsPaletteGroups,  
          changes: 0       
@@ -267,16 +307,12 @@ export default {
          this.selectedWrapperId = wrapperId
          var wrapper = this.$refs[wrapperId][0]
          this.selectedWrapper = wrapper
-         //console.log(`The wrapper: ${wrapperId} props are:`)         
-         //console.log(wrapper.getRenderedComponent.props)
 
          // Get the container
          const parts = wrapperId.split('$')
          const containerId = parts[0]
          console.log(`Current container is: ${containerId}`)
-         var cont = this.layout.find(c => c.id === containerId)
-         console.log(cont)
-         cont.span = 4
+         this.selectedContainer = this.layout.find(c => c.id === containerId)
       }
    },
    setup() {
