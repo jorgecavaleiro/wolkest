@@ -30,7 +30,8 @@
                               <div class="band">
                                  <div v-for="container in layout" 
                                     :ref="container.id" :key="container.id" 
-                                    :class="'container stack-container span-' + container.span" 
+                                    class="container stack-container" 
+                                    :style="'grid-column: ' + container.desktopColumn + ' / span ' + container.span +  '' "
                                     :id="container.id">          
                                     <ComponentWrapper class="wrapper" v-for="(c, index) in container.components" 
                                        :ref="container.id + '$' + index"
@@ -243,7 +244,7 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance, nextTick } from "vue";
+import { getCurrentInstance, nextTick } from "vue";
 import layoutLoader from "./pageBuilder/dep/layoutLoader";
 import RenderToIFrame from "../components/RenderToIFrame";
 import ComponentWrapper from "../components/ComponentWrapper";
@@ -291,6 +292,11 @@ export default {
 
          this.layout = {...currentLayout}
 
+         console.log('setting positions for layout:')
+         console.log(this.layout)
+
+         this.setContainersPositions(this.layout)
+
          this.$forceUpdate()
       },
       componentsGroupToggle(index) {
@@ -315,9 +321,39 @@ export default {
          this.selectedContainer = this.layout.find(c => c.id === containerId)
       }
    },
+   beforeMount() {
+      console.log('component ready for first render')
+      this.setContainersPositions(this.layout)      
+   },
    setup() {
       // load the page layout
       let layout = layoutLoader.loadLayout()
+
+      // set defaults for grid positions
+      const setContainersPositions = function(layout) {
+         const defaultSpan = 1
+         let lastSpan = defaultSpan
+         let desktopColumn = 0
+
+         if(!layout || !layout.length) {
+            console.error('layout not defined')
+            return
+         }
+
+         layout.forEach(cont => {
+            if (!cont.span) {
+               cont.span = defaultSpan
+            }              
+            desktopColumn += lastSpan
+            if (desktopColumn > 4) {
+               desktopColumn = 1
+            }
+            cont.desktopColumn = desktopColumn             
+            console.log(cont.desktopColumn + ' / ' + cont.span)
+
+            lastSpan = cont.span
+         })      
+      }
 
       let componentsPaletteGroups = new Array()
 
@@ -350,101 +386,12 @@ export default {
        })       
 
       const { appContext } = getCurrentInstance();
-      const css = ref(
-         `body {
-         background-color: rgba(0,0,0,.1);
-         }
-         h1 {
-            color: salmon;
-         }
-
-         ::-webkit-scrollbar {
-            width: 8px;
-            height: 6px;
-            background-color: #646464;
-         }         
-
-         #canvas {
-            background: #f5f7f8;
-            font-family: 'Roboto', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            padding: 20px 0;
-            margin: 1rem;
-            height: 100vh;
-         }    
-
-         .band {
-            width: 90%;
-            max-width: 1240px;
-            margin: 0 auto;
-            
-            display: grid;
-            
-            /*region Mobile: viewport w/ less than 500px */
-            grid-template-columns: 1fr;
-            
-            grid-template-rows: auto;
-            grid-gap: 20px;         
-         }         
-
-
-         /* Tablet: viewport from 500px to 849px */
-         @media only screen and (min-width: 500px) {
-            .band {
-               grid-template-columns: 1fr 1fr;
-            }  
-            .span-2 {
-               grid-column: 1/ span 2;
-            }
-            .span-3 {
-               grid-column: 1/ span 3;
-            }
-            .span-4 {
-               grid-column: 1/ span 4;
-            }
-         }
-
-         /* Desktop: viewport from 850px */
-         @media only screen and (min-width: 850px) {
-            .band {
-               grid-template-columns: 1fr 1fr 1fr 1fr;
-            }
-         }         
-
-         /* Containers */
-
-         .stack-container {
-            min-height: 100%;
-
-            display: flex;
-            flex-direction: column;
-            
-            position: relative;
-            top: 0;
-         }
-
-         .queue-container {
-            display: flex;
-            flex-direction: row;
-         }
-
-         /* Elements */
-
-         .element {
-            margin: 1rem 1rem 0 0;
-            width: 100%;
-         }
-
-         .f-height {
-            height: 100%;
-         }
-         `
-      );
+     
       return {
-         layout,
-         css,
+         layout,         
          appContext,
-         componentsPaletteGroups
+         componentsPaletteGroups,
+         setContainersPositions
       };
    },
 };
