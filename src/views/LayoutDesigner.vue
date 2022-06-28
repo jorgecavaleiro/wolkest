@@ -178,7 +178,7 @@
                                     </div>
                                     <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                        <div class="gjs-field gjs-field-text" data-input="">
-                                          <input type="text" placeholder="eg. Text here" @change="propertyValueChanged(key)" v-model="selectedWrapper.getRenderedComponent.props[key]">                                    
+                                          <input type="text" placeholder="eg. Text here" @change="onLayoutChanged()" v-model="selectedWrapper.getRenderedComponent.props[key]">                                    
                                        </div>
                                     </div>
                                  </div>                            
@@ -198,7 +198,8 @@
                                     </div>
                                     <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                        <div class="gjs-field gjs-field-text" data-input="">
-                                          <input type="text" placeholder="eg. Text here" v-model="selectedContainer.span">                                    
+                                          <!-- <input type="text" @change="onLayoutChanged()" placeholder="eg. Text here" v-model="selectedContainer.span"></input> -->
+                                          <input type="text" @change="selectedContainer.span=$event.target.value;onLayoutChanged()" placeholder="eg. Text here">
                                        </div>
                                     </div>
                                  </div>                            
@@ -273,30 +274,19 @@ export default {
          console.log(`Selected Panel: ${name}`);
          this.selectedPanel = name;
       },
-      async propertyValueChanged(propertyName) {
-         console.log(propertyName)
-
+      async onLayoutChanged() {
          this.changes++
 
-         const currentLayout = {...this.layout}
-
-         console.log(this.layout)
+         const currentLayout = [...this.layout]
 
          //TODO: Must call created components destroy!!
 
          this.layout = []
-
          this.$forceUpdate()
-
          await nextTick()
 
-         this.layout = {...currentLayout}
-
-         console.log('setting positions for layout:')
-         console.log(this.layout)
-
+         this.layout = [...currentLayout]
          this.setContainersPositions(this.layout)
-
          this.$forceUpdate()
       },
       componentsGroupToggle(index) {
