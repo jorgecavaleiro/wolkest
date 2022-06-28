@@ -198,7 +198,7 @@
                                     </div>
                                     <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                        <div class="gjs-field gjs-field-text" data-input="">
-                                          <!-- <input type="text" @change="onLayoutChanged()" placeholder="eg. Text here" v-model="selectedContainer.span"></input> -->
+                                          <!-- <input type="text" @change="onLayoutChanged()" placeholder="eg. Text here" v-model="selectedContainer.span"> -->
                                           <input type="text" @change="selectedContainer.span=$event.target.value;onLayoutChanged()" placeholder="eg. Text here">
                                        </div>
                                     </div>
