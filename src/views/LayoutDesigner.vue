@@ -171,7 +171,7 @@
                                  <i class="gjs-caret-icon fa" :class="{ 'fa-caret-down': componentPropertiesIsOpen, 'fa-caret-right': !componentPropertiesIsOpen }" ></i>
                                  Component Properties
                               </div>
-                              <div v-if="componentPropertiesIsOpen" class="gjs-blocks-c">
+                              <div v-if="componentPropertiesIsOpen && selectedWrapper" class="gjs-blocks-c">
                                  <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
                                     <div class="gjs-label-wrp" data-label="">
                                        <div class="gjs-label" :title="key">{{key}}</div>
@@ -191,15 +191,28 @@
                                  <i class="gjs-caret-icon fa" :class="{ 'fa-caret-down': containerPropertiesIsOpen, 'fa-caret-right': !containerPropertiesIsOpen }" ></i>
                                  Container Properties
                               </div>
-                              <div v-if="containerPropertiesIsOpen" class="gjs-blocks-c">
-                                 <div class="gjs-trt-trait gjs-trt-trait--text">
+                              <div v-if="containerPropertiesIsOpen && selectedContainer" class="gjs-blocks-c">
+                                 <div class="gjs-trt-trait gjs-trt-trait--text full-width">
                                     <div class="gjs-label-wrp" data-label="">
                                        <div class="gjs-label" title="span">span</div>
                                     </div>
                                     <div class="gjs-field-wrp gjs-field-wrp--text" data-input="">
                                        <div class="gjs-field gjs-field-text" data-input="">
-                                          <!-- TODO: Force Blur: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/blur -->
-                                          <input type="text" @change="onLayoutChanged()" placeholder="eg. Text here" v-model="selectedContainer.span">                                          
+
+                                          <div class="gjs-field gjs-select">
+                                             <span id="gjs-sm-input-holder">
+                                                <select v-model="selectedContainer.span" @change="onLayoutChanged();exitField($event.target)">
+                                                   <option value="1">1 Column</option>
+                                                   <option value="2">2 Columns</option>
+                                                   <option value="3">3 Columns</option>
+                                                   <option value="4">4 Columns</option>
+                                                </select>   
+                                             </span>
+                                             <div class="gjs-sel-arrow">
+                                                <div class="gjs-d-s-arrow"></div>
+                                             </div>
+                                          </div>
+
                                        </div>
                                     </div>
                                  </div>                            
@@ -289,6 +302,12 @@ export default {
          this.setContainersPositions(this.layout)
          this.$forceUpdate()
       },
+      exitField(target) {
+         if(target) {
+            // console.log(target instanceof HTMLElement)
+            target.blur()
+         }         
+      }, 
       componentsGroupToggle(index) {
          this.componentsGroups[index].isOpen = !this.componentsGroups[index].isOpen
 
@@ -417,6 +436,9 @@ h1 {
   overflow-y: auto;
 }
 
+.full-width {
+   width: 100%;
+}
 .band {
   width: 90%;
   max-width: 1240px;
