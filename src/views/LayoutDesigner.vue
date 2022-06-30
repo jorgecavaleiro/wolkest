@@ -172,7 +172,9 @@
                                  Component Properties
                               </div>
                               <div v-if="componentPropertiesIsOpen && selectedWrapper" class="gjs-blocks-c">
-                                 <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" :key="index" class="gjs-trt-trait gjs-trt-trait--text">
+                                 <div v-for="([key, value], index) in Object.entries(selectedWrapper.getRenderedComponent.props)" 
+                                    :key="index" 
+                                    class="gjs-trt-trait gjs-trt-trait--text full-width">
                                     <div class="gjs-label-wrp" data-label="">
                                        <div class="gjs-label" :title="key">{{key}}</div>
                                     </div>
@@ -341,7 +343,7 @@ export default {
       // set defaults for grid positions
       const setContainersPositions = function(layout) {
          const defaultSpan = 1
-         let lastSpan = defaultSpan
+         let lastSpan = -1
          let desktopColumn = 0
 
          if(!layout || !layout.length) {
@@ -349,14 +351,26 @@ export default {
             return
          }
 
-         layout.forEach(cont => {
+         layout.forEach((cont) => {
             if (!cont.span) {
                cont.span = defaultSpan
-            }              
-            desktopColumn += lastSpan
+            }             
+            if (lastSpan === -1) {
+               lastSpan = 1
+            } 
+            desktopColumn += +lastSpan
+
             if (desktopColumn > 4) {
                desktopColumn = 1
             }
+
+            const endingColumn = +desktopColumn + +cont.span   
+            console.log(`ending on: ${endingColumn}`)
+
+            if (endingColumn > 5) {
+               desktopColumn = 1
+            }            
+
             cont.desktopColumn = desktopColumn             
             console.log(cont.desktopColumn + ' / ' + cont.span)
 
