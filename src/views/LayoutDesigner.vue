@@ -1,5 +1,5 @@
 <template lang="en">
-<div class="container">
+<div class="container" v-resize="setDimensions">
    <div  data-v-0ec79c91="" class="gjs-editor-cont" style="width: 100%; height:1280px;">
       <div class="gjs-editor gjs-one-bg gjs-two-color">
          <div class="gjs-cv-canvas">
@@ -281,7 +281,10 @@ export default {
          containerPropertiesIsOpen: true,
          isInPreviewMode: false,
          componentsGroups: this.componentsPaletteGroups,  
-         changes: 0       
+         changes: 0,
+         gridColumns: 4,
+         width: document.documentElement.clientWidth,
+         height: document.documentElement.clientHeight                
       };
    },
    methods: {
@@ -304,6 +307,11 @@ export default {
          this.setContainersPositions(this.layout)
          this.$forceUpdate()
       },
+      setDimensions: function({ width, height }) {
+         this.width = width;
+         this.height = height;
+         console.log(`Width: ${width}, height: ${height}`)
+      },      
       exitField(target) {
          if(target) {
             // console.log(target instanceof HTMLElement)
@@ -312,9 +320,6 @@ export default {
       }, 
       componentsGroupToggle(index) {
          this.componentsGroups[index].isOpen = !this.componentsGroups[index].isOpen
-
-         console.log(`Components Group: ${index}, changed to: ${this.componentsGroups[index].isOpen}`)
-         console.log(this.componentsGroups)
       },
       changeSelectedWrapperTo(e, wrapperId) {
          if (this.isInPreviewMode)
@@ -343,7 +348,7 @@ export default {
       // set defaults for grid positions
       const setContainersPositions = function(layout) {
          const defaultSpan = 1
-         let lastSpan = -1
+         let lastSpan = 1
          let desktopColumn = 0
 
          if(!layout || !layout.length) {
@@ -355,19 +360,17 @@ export default {
             if (!cont.span) {
                cont.span = defaultSpan
             }             
-            if (lastSpan === -1) {
-               lastSpan = 1
-            } 
+
             desktopColumn += +lastSpan
 
-            if (desktopColumn > 4) {
+            if (desktopColumn > this.gridColumns) {
                desktopColumn = 1
             }
 
             const endingColumn = +desktopColumn + +cont.span   
             console.log(`ending on: ${endingColumn}`)
 
-            if (endingColumn > 5) {
+            if (endingColumn > (this.gridColumns + 1)) {
                desktopColumn = 1
             }            
 
@@ -479,15 +482,6 @@ h1 {
 @media only screen and (min-width: 500px) {
   .band {
     grid-template-columns: 1fr 1fr;
-  }
-  .span-2 {
-    grid-column: 1 / span 2;
-  }
-  .span-3 {
-    grid-column: 1 / span 3;
-  }
-  .span-4 {
-    grid-column: 1 / span 4;
   }
 }
 

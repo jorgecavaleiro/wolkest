@@ -5,6 +5,7 @@ import PrimeVue from 'primevue/config'
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog'
+import ResizeDirective from "./directives/resize";
 
 // Styles
 import 'primevue/resources/themes/saga-blue/theme.css'  //theme
@@ -20,6 +21,12 @@ app.use(PrimeVue);
 app.component('Prime-Dialog', Dialog);
 app.component('PV-Button', Button);
 app.component('PV-InputText', InputText);
+
+// Import global directives
+
+app.directive('resize', ResizeDirective)
+
+// Assign the Router
 
 app.use(router);
 
