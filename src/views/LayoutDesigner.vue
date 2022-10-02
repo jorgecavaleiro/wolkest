@@ -261,7 +261,7 @@
 
 <script>
 import { getCurrentInstance, nextTick } from "vue";
-import layoutLoader from "./pageBuilder/dep/layoutLoader";
+import layoutLoader from "./layout/layoutLoader";
 import RenderToIFrame from "../components/RenderToIFrame";
 import ComponentWrapper from "../components/ComponentWrapper";
 

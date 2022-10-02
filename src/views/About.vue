@@ -1,18 +1,15 @@
 <template>
   <div class="home">
-    <!-- <div class="box" ref="container">
+    <div class="box" ref="container">
       <h2>About...</h2>
-    </div> -->
-    <LayoutBuilderVue></LayoutBuilderVue>
+    </div>
   </div>
 </template>
 
 <script setup>
   import { getCurrentInstance } from 'vue'
-  import LayoutBuilderVue from '@/components/LayoutBuilder.vue';
   const { appContext } = getCurrentInstance()
   console.log( appContext )
-  console.log(LayoutBuilderVue)
 </script>
 
 <style scoped>
