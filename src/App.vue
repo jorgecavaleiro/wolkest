@@ -45,9 +45,8 @@
           <i class="pi pi-bars" aria-hidden="true"></i>
         </div>
         <div class="navbar__left">
-          <a href="#">Subscribers</a>
-          <a href="#">Video Management</a>
-          <a class="active_link" href="#">Admin</a>
+          <a href="#">{{ currentRouteName }}</a>
+          <!-- <a class="active_link" href="#">Admin</a> -->
         </div>
         <div class="navbar__right">
           <a href="#">
@@ -81,6 +80,11 @@ export default {
   data() {
     return {
       sidebarIsOpen: true
+    }
+  },
+  computed: {
+    currentRouteName() {
+        return this.$route.name;
     }
   },
   methods: {
