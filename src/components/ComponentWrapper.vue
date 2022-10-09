@@ -77,7 +77,9 @@ export default {
 
 <style scoped>
     .wrapper:hover {
-        transform: scale(0.96); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */  
+        transform: scale(1.02); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */  
+        box-shadow: 0 4px 5px rgba(0,0,0,0.2);
+        cursor: pointer;
     }
     .selected {
         border: dashed 2px blue;
